@@ -1,5 +1,7 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import Account from "./components/Account";
+import Stock from "./components/Stock";
 
 const App = () => {
   return (
@@ -10,12 +12,10 @@ const App = () => {
       </TabList>
 
       <TabPanel>
-        {/* TODO: 가계부 화면 */}
-        <h2>Any content 1</h2>
+        <Account />
       </TabPanel>
       <TabPanel>
-        {/* TODO: 주식 화면 */}
-        <h2>Any content 2</h2>
+        <Stock />
       </TabPanel>
     </Tabs>
   );
