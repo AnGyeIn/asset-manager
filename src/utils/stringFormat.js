@@ -1,7 +1,7 @@
 const currencyFormat = Intl.NumberFormat("ko-KR");
 /**
  *
- * @param {int} money
+ * @param {number | string} money
  * @returns
  */
 export const currencyOf = (money) => currencyFormat.format(money);

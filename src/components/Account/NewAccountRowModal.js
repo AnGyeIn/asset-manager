@@ -32,12 +32,14 @@ Modal.setAppElement("#root");
  * @param {{
  *   isOpen: boolean,
  *   close: () => {},
- *   insertData: (newData: {
- *     date: int,
- *     amount: int,
- *     title: string,
- *     content: string | undefined,
- *   }) => {},
+ *   insertData: (
+ *     newData: {
+ *       date: int,
+ *       amount: int,
+ *       title: string,
+ *       content: string | undefined,
+ *     }
+ *   ) => {},
  * }}
  * @returns
  */
@@ -53,7 +55,7 @@ const NewAccountRowModal = ({ isOpen, close, insertData, ...props }) => {
   /**
    *
    * @param {'date' | 'amount' | 'title' | 'content'} key
-   * @param {int | string} value
+   * @param {number | string} value
    */
   const updateNewData = (key, value) => {
     const updatedNewData = { ...newData };
@@ -68,6 +70,7 @@ const NewAccountRowModal = ({ isOpen, close, insertData, ...props }) => {
       return;
     }
     insertData(newData);
+    close();
   };
 
   return (

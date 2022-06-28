@@ -42,7 +42,7 @@ const dummyData = [
  *   amount: int,
  *   title: string,
  *   content: string | undefined,
- * }[]} rawData data read from file
+ * }[]} rawData data without accumulation
  * @param {Date} today
  * @returns {{
  *   date: int,
@@ -86,7 +86,7 @@ const fetchCalendars = () => dummyCalendars;
  * @returns
  */
 // TODO: read from file
-const fetchRawData = (calendar) => dummyData;
+const fetchRawDataFromFile = (calendar) => dummyData;
 
 /**
  *
@@ -96,32 +96,16 @@ const fetchRawData = (calendar) => dummyData;
  * }} calendar
  * @param {{
  *   date: int,
- *   amonunt: int,
+ *   amount: int,
  *   title: string,
  *   content: string | undefined,
- * }} newData
- * @param {*} index
+ * }[]} updatedRawData
  */
-// TODO: write to file and propagate
-const insertRawData = (calendar, newData, index) => {
-  const truncated = dummyData.splice(index);
-  dummyData.push(newData, ...truncated);
-  return [...dummyData];
-};
-
-/**
- *
- * @param {{
- *   year: int,
- *   month: int,
- * }} calendar
- * @param {int} index
- * @returns
- */
-// TODO: write to file and propagate
-const removeRawData = (calendar, index) => {
-  dummyData.splice(index, 1);
-  return [...dummyData];
+const updateRawDataToFiles = (calendar, updatedRawData) => {
+  // TODO: write to file and propagate(make async)
+  dummyData.splice(0);
+  dummyData.push(...updatedRawData);
+  console.log("dummyData: ", dummyData);
 };
 
 const Account = () => {
@@ -145,9 +129,9 @@ const Account = () => {
     setSelectedCalendar(calendars.current[calendars.current.length - 1]);
   }, []);
 
-  // reload data
+  // load data
   useEffect(() => {
-    setRawData(fetchRawData(selectedCalendar));
+    setRawData(fetchRawDataFromFile(selectedCalendar));
   }, [selectedCalendar]);
 
   const currCalendarStr = calendarToString(currCalendar);
@@ -177,24 +161,44 @@ const Account = () => {
 
   /**
    *
+   * @param {{
+   *   date: int,
+   *   amount: int,
+   *   title: string,
+   *   content: string | undefined,
+   * }} updatedData
+   * @param {int} index
+   */
+  const editData = (updatedData, index) => {
+    const updatedRawData = [...rawData];
+    updatedRawData[index] = updatedData;
+    updateRawDataToFiles(selectedCalendar, updatedRawData);
+    setRawData(updatedRawData);
+  };
+
+  /**
+   *
    * @param {int} index
    * @returns
    */
   const openInsertDataModal = (index) => setNewAccountRowIndex(index);
 
+  const closeInsertDataModal = () => setNewAccountRowIndex(-1);
+
   /**
    *
-   * @param {int} index
    * @param {{
    *   date: int,
    *   amount: int,
    *   title: string,
    *   content: string | undefined,
    * }} newData
+   * @param {int} index
    */
-  const insertData = (newData) => {
-    setRawData(insertRawData(selectedCalendar, newData, newAccountRowIndex));
-    setNewAccountRowIndex(-1);
+  const insertData = (newData, index = newAccountRowIndex) => {
+    const updatedRawData = [...rawData.splice(0, index), newData, ...rawData];
+    updateRawDataToFiles(selectedCalendar, updatedRawData);
+    setRawData(updatedRawData);
   };
 
   /**
@@ -202,7 +206,9 @@ const Account = () => {
    * @param {int} index
    */
   const removeData = (index) => {
-    setRawData(removeRawData(selectedCalendar, index));
+    const updatedRawData = rawData.filter((_, _index) => _index !== index);
+    updateRawDataToFiles(selectedCalendar, updatedRawData);
+    setRawData(updatedRawData);
   };
 
   return (
@@ -222,12 +228,12 @@ const Account = () => {
         <thead style={{ backgroundColor: "lightGrey" }}>
           <tr>
             <BorderedTh width={"7%"} />
-            <BorderedTh width={"4%"}>날짜</BorderedTh>
+            <BorderedTh width={"7%"}>날짜</BorderedTh>
             <BorderedTh width={"12%"}>수입</BorderedTh>
             <BorderedTh width={"12%"}>지출</BorderedTh>
             <BorderedTh width={"14%"}>계</BorderedTh>
-            <BorderedTh>항목</BorderedTh>
-            <BorderedTh>비고</BorderedTh>
+            <BorderedTh width={"14%"}>항목</BorderedTh>
+            <BorderedTh width={"auto"}>비고</BorderedTh>
           </tr>
         </thead>
         <tbody>
@@ -237,6 +243,7 @@ const Account = () => {
               data={data}
               index={index}
               key={data.date + data.title + index}
+              editData={(updatedData) => editData(updatedData, index)}
               openInsertDataModal={() => openInsertDataModal(index)}
               removeData={() => removeData(index)}
             />
@@ -245,7 +252,7 @@ const Account = () => {
       </BorderedTable>
       <NewAccountRowModal
         isOpen={newAccountRowIndex >= 0}
-        close={() => setNewAccountRowIndex(-1)}
+        close={closeInsertDataModal}
         insertData={insertData}
       />
     </>
