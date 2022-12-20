@@ -50,7 +50,8 @@ public class AccountBookEntry implements Serializable {
 
   @NotNull
   @ColumnDefault(value = "0")
-  private Integer amount;
+  @Builder.Default
+  private Integer amount = 0;
 
   private String title;
 
