@@ -9,8 +9,8 @@ import {
   RepeatedAccountBookEntryUpdate,
 } from "../models/repeatedAccountBookEntry";
 
-const serverUrl = "http://localhost:8080/v0";
-const getUrl = (path: string) => `${serverUrl}/${path}`;
+const serverUrl = `${process.env.REACT_APP_SERVER_URL}/v0`;
+const getUrl = (path: string) => `${serverUrl}${path}`;
 
 interface Request {
   path: string;
@@ -36,11 +36,11 @@ const checkResponse = async (
 ) => {
   try {
     const response = await method(request);
-    return response?.data;
+    return response;
   } catch (err) {
     console.error(err);
     if (isAxiosError(err)) {
-      return err.response?.data;
+      return err.response;
     }
   }
 };
