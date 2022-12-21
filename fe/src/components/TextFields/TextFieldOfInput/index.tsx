@@ -9,15 +9,17 @@ import {
 } from "react";
 import { AnyInput } from "../../../models/input";
 import { enterKeyDown } from "../../../utils/eventUtils";
+import { getCamelCaseFrom } from "../../../utils/stringUtils";
 
 interface Props<I> {
   input: I;
   setInput: Dispatch<SetStateAction<I>>;
-  label: string;
+  label?: string;
   showLabel?: boolean;
   fullWidth?: boolean;
   required?: boolean;
   onCompleted?: () => void;
+  labelKey?: string;
 }
 const TextFieldOfInput = ({
   input,
@@ -27,16 +29,21 @@ const TextFieldOfInput = ({
   fullWidth = false,
   required = false,
   onCompleted,
+  labelKey: inLabelKey,
 }: Props<AnyInput>) => {
-  const value = useMemo(() => input[label], [input, label]);
+  const labelKey = useMemo(
+    () => (inLabelKey !== undefined ? inLabelKey : getCamelCaseFrom(label!)),
+    [inLabelKey, label]
+  );
+  const value = useMemo(() => input[labelKey], [input[labelKey]]);
 
   const onChange = useCallback(
     ({ target: { value: newValue } }: ChangeEvent<HTMLInputElement>) =>
       setInput((prevInput) => ({
         ...prevInput,
-        [label]: typeof value === "number" ? Number(newValue) : newValue,
+        [labelKey]: typeof value === "number" ? Number(newValue) : newValue,
       })),
-    [value]
+    [labelKey, value]
   );
 
   const onCompletedByEnterKeyDown = useCallback(

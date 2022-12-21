@@ -75,12 +75,12 @@ const api = {
     accountBook: async (yearMonth: YearMonth): Promise<number> => {
       const path = "/accountBook";
       const response = await checkResponse(POST, { path, data: yearMonth });
-      return response?.data ?? -1;
+      return Number(response?.data);
     },
     accountBookEntry: async (yearMonthDate: YearMonthDate): Promise<number> => {
       const path = "/accountBookEntry";
       const response = await checkResponse(POST, { path, data: yearMonthDate });
-      return response?.data ?? -1;
+      return Number(response?.data);
     },
     repeatedAccountBookEntry: async (
       repeatedAccountBookEntry: RepeatedAccountBookEntry
@@ -90,7 +90,7 @@ const api = {
         path,
         data: repeatedAccountBookEntry,
       });
-      return response?.data ?? -1;
+      return Number(response?.data);
     },
   },
 

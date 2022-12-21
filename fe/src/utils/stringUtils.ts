@@ -1,4 +1,5 @@
 import { YearMonthDate } from "../models/calendar";
+import { isValidNumber } from "./validationUtils";
 
 /**
  *
@@ -18,4 +19,15 @@ export const getDateStringFrom = ({ year, month, date }: YearMonthDate) =>
 
 const numberFormat = new Intl.NumberFormat();
 export const getCurrencyStringFrom = (amount: number) =>
-  numberFormat.format(amount);
+  isValidNumber(amount) ? numberFormat.format(amount) : "";
+
+export const getCamelCaseFrom = (sentence: string) => {
+  const words = sentence.split(" ");
+  return words
+    .map((word, index) =>
+      index === 0
+        ? word.toLowerCase()
+        : `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`
+    )
+    .join("");
+};

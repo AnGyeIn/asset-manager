@@ -13,6 +13,7 @@ import {
   horizontalCenteredBoxStyle,
   verticalCenterdBoxStyle,
 } from "../../../styles/boxStyles";
+import { isValidNumber } from "../../../utils/validationUtils";
 import CenteredCircularProgress from "../../CircularProgresses/CenteredCircularProgress";
 import AccountBookTable from "./AccountBookTable";
 
@@ -93,7 +94,7 @@ const AccountBook = () => {
   useEffect(() => {
     const canceler = { cancel: false };
     const { year, month } = selectedYearMonth;
-    if (!Number.isNaN(year) && !Number.isNaN(month)) {
+    if (isValidNumber(year) && isValidNumber(month)) {
       (async () => {
         const _accountBookEntries = await api.get.accountBookEntries(
           selectedYearMonth
@@ -127,7 +128,7 @@ const AccountBook = () => {
             <Typography sx={{ margin: "0 1%" }}>년</Typography>
           </Box>
         )}
-        {!Number.isNaN(selectedYearMonth.year) && (
+        {isValidNumber(selectedYearMonth.year) && (
           <Box sx={{ ...horizontalCenteredBoxStyle, margin: "0 1%" }}>
             <Autocomplete
               sx={{ width: "4rem" }}
