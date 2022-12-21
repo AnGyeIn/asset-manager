@@ -1,13 +1,13 @@
 import { Box, CircularProgress, SxProps } from "@mui/material";
 import { memo } from "react";
-import { horizontalCenteredBoxStyle } from "../../../styles/boxStyles";
+import { centeredBoxStyleHorizontal } from "../../../styles/boxStyles";
 
-interface Props {
+type Props = {
   sx?: SxProps;
-}
+};
 const CenteredCircularProgress = ({ sx }: Props) => {
   return (
-    <Box sx={{ ...horizontalCenteredBoxStyle, width: "100%", ...sx }}>
+    <Box sx={{ ...centeredBoxStyleHorizontal, width: "100%", ...sx }}>
       <CircularProgress color={"inherit"} />
     </Box>
   );

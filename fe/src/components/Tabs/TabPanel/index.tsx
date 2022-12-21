@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-interface Props<K> {
+type Props<K> = {
   tabKey: K;
   selectedTabKey: K;
   component: JSX.Element;

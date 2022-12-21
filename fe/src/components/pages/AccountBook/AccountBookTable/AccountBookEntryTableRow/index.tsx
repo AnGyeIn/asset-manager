@@ -3,8 +3,8 @@ import { Box, TableCell, TableRow } from "@mui/material";
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import api from "../../../../../api";
 import { AccountBookEntry } from "../../../../../models/accountBook";
-import { AccountBookEntryRowInput } from "../../../../../models/input";
-import { horizontalCenteredBoxStyle } from "../../../../../styles/boxStyles";
+import { AccountBookEntryTableRowInput } from "../../../../../models/input";
+import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
 import { isInputChanged } from "../../../../../utils/inputUtils";
 import {
   getCurrencyStringFrom,
@@ -16,7 +16,7 @@ import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCir
 import TextFieldOfInput from "../../../../TextFields/TextFieldOfInput";
 import TextFieldOfIntegerValidOnly from "../../../../TextFields/TextFieldOfIntegerValidOnly";
 
-interface Props {
+type Props = {
   isFirst: boolean;
   accountBookEntry: AccountBookEntry;
   accumulation: number;
@@ -37,7 +37,7 @@ const AccountBookEntryTableRow = ({
   reload,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [input, setInput] = useState<AccountBookEntryRowInput>({
+  const [input, setInput] = useState<AccountBookEntryTableRowInput>({
     date,
     amount,
     title: title ?? "",
@@ -51,14 +51,6 @@ const AccountBookEntryTableRow = ({
     description: description ?? "",
   });
 
-  const { amountPositiveStr, amountNegativeStr } = useMemo(
-    () => ({
-      amountPositiveStr: getCurrencyStringFrom(amount > 0 ? amount : NaN),
-      amountNegativeStr: getCurrencyStringFrom(amount < 0 ? -amount : NaN),
-    }),
-    [amount]
-  );
-
   const { amountPositive, amountNegative } = useMemo(
     () => ({
       amountPositive: input.amount > 0 ? input.amount : NaN,
@@ -66,6 +58,18 @@ const AccountBookEntryTableRow = ({
     }),
     [input.amount]
   );
+
+  const isPast = useMemo(() => {
+    const today = new Date();
+    const currYear = today.getFullYear();
+    const currMonth = today.getMonth() + 1;
+    const currDate = today.getDate();
+    return (
+      year < currYear ||
+      (year === currYear &&
+        (month < currMonth || (month === currMonth && date <= currDate)))
+    );
+  }, [year, month, date]);
 
   const insertAccountBookEntry = useCallback(async () => {
     setIsLoading(true);
@@ -155,12 +159,12 @@ const AccountBookEntryTableRow = ({
   }, [accountBookEntryId, input, reload, year, month, date]);
 
   return (
-    <TableRow>
+    <TableRow sx={{ backgroundColor: isPast ? "lightgray" : "white" }}>
       <TableCell>
         {isLoading ? (
-          <CenteredCircularProgress sx={{ height: "1.5rem" }} />
+          <CenteredCircularProgress sx={{ height: "1rem" }} />
         ) : (
-          <Box sx={horizontalCenteredBoxStyle}>
+          <Box sx={centeredBoxStyleHorizontal}>
             <AddCircleOutline
               color={"success"}
               onClick={insertAccountBookEntry}
@@ -175,76 +179,63 @@ const AccountBookEntryTableRow = ({
         )}
       </TableCell>
       <TableCell sx={{ textAlign: "center" }}>
-        {isFirst ? (
-          date
-        ) : (
-          <TextFieldOfIntegerValidOnly
-            fullWidth
-            value={input.date}
-            setValue={setDate}
-            min={1}
-            max={31}
-            onCompleted={updateAccountBookEntry}
-            sx={{ textAlign: "center" }}
-          />
-        )}
+        <TextFieldOfIntegerValidOnly
+          fullWidth
+          value={input.date}
+          setValue={setDate}
+          min={1}
+          max={31}
+          onCompleted={updateAccountBookEntry}
+          sx={{ height: "1rem", textAlign: "center" }}
+          disabled={isFirst}
+        />
       </TableCell>
       <TableCell sx={{ color: "red", textAlign: "right" }}>
-        {isFirst ? (
-          amountPositiveStr
-        ) : (
-          <TextFieldOfIntegerValidOnly
-            fullWidth
-            value={amountPositive}
-            setValue={setAmountPositive}
-            onCompleted={updateAccountBookEntry}
-            formatter={getCurrencyStringFrom}
-            sx={{ color: "red", textAlign: "right" }}
-          />
-        )}
+        <TextFieldOfIntegerValidOnly
+          fullWidth
+          value={amountPositive}
+          setValue={setAmountPositive}
+          onCompleted={updateAccountBookEntry}
+          formatter={getCurrencyStringFrom}
+          sx={{ height: "1rem", color: "red", textAlign: "right" }}
+          disabled={isFirst}
+        />
       </TableCell>
       <TableCell sx={{ color: "blue", textAlign: "right" }}>
-        {isFirst ? (
-          amountNegativeStr
-        ) : (
-          <TextFieldOfIntegerValidOnly
-            fullWidth
-            value={amountNegative}
-            setValue={setAmountNegative}
-            onCompleted={updateAccountBookEntry}
-            formatter={getCurrencyStringFrom}
-            sx={{ color: "blue", textAlign: "right" }}
-          />
-        )}
+        <TextFieldOfIntegerValidOnly
+          fullWidth
+          value={amountNegative}
+          setValue={setAmountNegative}
+          onCompleted={updateAccountBookEntry}
+          formatter={getCurrencyStringFrom}
+          sx={{ height: "1rem", color: "blue", textAlign: "right" }}
+          disabled={isFirst}
+        />
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
         {useMemo(() => getCurrencyStringFrom(accumulation), [accumulation])}
       </TableCell>
       <TableCell>
-        {isFirst ? (
-          title
-        ) : (
-          <TextFieldOfInput
-            fullWidth
-            input={input}
-            setInput={setInput}
-            label={"title"}
-            onCompleted={updateAccountBookEntry}
-          />
-        )}
+        <TextFieldOfInput
+          fullWidth
+          input={input}
+          setInput={setInput}
+          label={"title"}
+          onCompleted={updateAccountBookEntry}
+          sx={{ height: "1rem" }}
+          disabled={isFirst}
+        />
       </TableCell>
       <TableCell>
-        {isFirst ? (
-          description
-        ) : (
-          <TextFieldOfInput
-            fullWidth
-            input={input}
-            setInput={setInput}
-            label={"descripiton"}
-            onCompleted={updateAccountBookEntry}
-          />
-        )}
+        <TextFieldOfInput
+          fullWidth
+          input={input}
+          setInput={setInput}
+          label={"descripiton"}
+          onCompleted={updateAccountBookEntry}
+          sx={{ height: "1rem" }}
+          disabled={isFirst}
+        />
       </TableCell>
     </TableRow>
   );

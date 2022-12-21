@@ -3,7 +3,7 @@ import { ChangeEvent, memo, useCallback, useMemo } from "react";
 import { enterKeyDown } from "../../../utils/eventUtils";
 import { isValidNumber } from "../../../utils/validationUtils";
 
-interface Props {
+type Props = {
   value: number;
   setValue: (newValue: number) => void;
   label?: string;
@@ -14,6 +14,7 @@ interface Props {
   max?: number;
   formatter?: (value: number) => string;
   sx?: SxProps;
+  disabled?: boolean;
 }
 const TextFieldOfIntegerValidOnly = ({
   value,
@@ -26,6 +27,7 @@ const TextFieldOfIntegerValidOnly = ({
   max,
   formatter,
   sx,
+  disabled = false,
 }: Props) => {
   const valueStr = useMemo(
     () => (formatter ? formatter(value) : value.toString()),
@@ -65,6 +67,7 @@ const TextFieldOfIntegerValidOnly = ({
       onChange={onChange}
       onBlur={onCompleted}
       onKeyDown={onCompletedByEnterKeyDown}
+      disabled={disabled}
     />
   );
 };

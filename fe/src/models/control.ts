@@ -1,3 +1,3 @@
-export interface Canceler {
+export type Canceler = {
   cancel: boolean;
-}
+};

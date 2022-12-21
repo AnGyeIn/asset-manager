@@ -10,7 +10,7 @@ import { AccountBookEntry } from "../../../../models/accountBook";
 import TableHeaderCell from "../../../TableCells/TableHeaderCell";
 import AccountBookEntryTableRow from "./AccountBookEntryTableRow";
 
-interface Props {
+type Props = {
   accountBookEntries: AccountBookEntry[];
   reload: () => void;
 }

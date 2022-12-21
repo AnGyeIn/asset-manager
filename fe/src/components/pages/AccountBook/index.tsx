@@ -1,3 +1,4 @@
+import { AddCircleOutline } from "@mui/icons-material";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import {
   SyntheticEvent,
@@ -9,10 +10,13 @@ import {
 import api from "../../../api";
 import { AccountBookEntry } from "../../../models/accountBook";
 import { YearMonth, YearsMonths } from "../../../models/calendar";
+import { Canceler } from "../../../models/control";
 import {
-  horizontalCenteredBoxStyle,
-  verticalCenterdBoxStyle,
+  centeredBoxStyleHorizontal,
+  centeredBoxStyleVertical,
 } from "../../../styles/boxStyles";
+import { getMonthStringFrom } from "../../../utils/stringUtils";
+import { toastError, toastInfo } from "../../../utils/toastUtils";
 import { isValidNumber } from "../../../utils/validationUtils";
 import CenteredCircularProgress from "../../CircularProgresses/CenteredCircularProgress";
 import AccountBookTable from "./AccountBookTable";
@@ -62,18 +66,49 @@ const AccountBook = () => {
     [selectedYearMonth.month]
   );
 
+  const fetchYearsMonths = useCallback(async (canceler?: Canceler) => {
+    const _yearsMonths = await api.get.accountBooksYearsAndMonths();
+    if (canceler?.cancel) {
+      return;
+    }
+    setYearsMonths(_yearsMonths);
+  }, []);
+
+  const createNextAccountBook = useCallback(async () => {
+    const lastYear = years[years.length - 1];
+    const months = yearsMonths[lastYear];
+    const lastMonth = months[months.length - 1];
+    let nextYear = lastYear;
+    let nextMonth = lastMonth + 1;
+    if (nextMonth === 13) {
+      nextYear++;
+      nextMonth = 1;
+    }
+    const yearMonth = { year: nextYear, month: nextMonth };
+    const accountBookEntryId = await api.post.accountBook(yearMonth);
+    if (isValidNumber(accountBookEntryId)) {
+      toastInfo(
+        `Succeeded to create next account book of ${getMonthStringFrom(
+          yearMonth
+        )}.`
+      );
+      fetchYearsMonths();
+    } else {
+      toastError(
+        `Failed to create next account book of ${getMonthStringFrom(
+          yearMonth
+        )}.`
+      );
+    }
+  }, [years, fetchYearsMonths]);
+
   useEffect(() => {
     const canceler = { cancel: false };
-    (async () => {
-      const _yearsMonths = await api.get.accountBooksYearsAndMonths();
-      if (!canceler.cancel) {
-        setYearsMonths(_yearsMonths);
-      }
-    })();
+    fetchYearsMonths(canceler);
     return () => {
       canceler.cancel = true;
     };
-  }, []);
+  }, [fetchYearsMonths]);
 
   useEffect(() => {
     if (years.length > 0) {
@@ -113,9 +148,9 @@ const AccountBook = () => {
 
   return (
     <>
-      <Box sx={{ width: "100%", display: "flex" }}>
+      <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
         {years.length > 0 && (
-          <Box sx={horizontalCenteredBoxStyle}>
+          <Box sx={centeredBoxStyleHorizontal}>
             <Autocomplete
               sx={{ width: "7rem" }}
               options={years}
@@ -129,7 +164,7 @@ const AccountBook = () => {
           </Box>
         )}
         {isValidNumber(selectedYearMonth.year) && (
-          <Box sx={{ ...horizontalCenteredBoxStyle, margin: "0 1%" }}>
+          <Box sx={{ ...centeredBoxStyleHorizontal, margin: "0 1%" }}>
             <Autocomplete
               sx={{ width: "4rem" }}
               options={yearsMonths[selectedYearMonth.year]}
@@ -142,8 +177,11 @@ const AccountBook = () => {
             <Typography sx={{ margin: "0 1%" }}>월</Typography>
           </Box>
         )}
+        {years.length > 0 && (
+          <AddCircleOutline color={"success"} onClick={createNextAccountBook} />
+        )}
       </Box>
-      <Box sx={{ ...verticalCenterdBoxStyle, width: "100%" }}>
+      <Box sx={{ ...centeredBoxStyleVertical, width: "100%" }}>
         {accountBookEntries.length > 0 ? (
           <AccountBookTable
             accountBookEntries={accountBookEntries}

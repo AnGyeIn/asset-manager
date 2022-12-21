@@ -1,7 +1,7 @@
 import { SxProps, TableCell } from "@mui/material";
 import { memo, ReactNode } from "react";
 
-interface Props {
+type Props = {
   sx?: SxProps;
   children?: ReactNode;
 }

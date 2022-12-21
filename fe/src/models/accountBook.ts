@@ -1,12 +1,16 @@
-export interface AccountBookEntryUpdate {
+import { FieldRemoved } from "../utils/typeUtils";
+
+export type AccountBookEntry = {
+  accountBookEntryId: number;
+  year: number;
+  month: number;
   date: number;
   amount: number;
   title?: string;
   description?: string;
-}
+};
 
-export interface AccountBookEntry extends AccountBookEntryUpdate {
-  accountBookEntryId: number;
-  year: number;
-  month: number;
-}
+export type AccountBookEntryUpdate = FieldRemoved<
+  AccountBookEntry,
+  "accountBookEntryId" | "year" | "month"
+>;

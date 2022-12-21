@@ -7,15 +7,11 @@ export const isInputChanged = <I extends AnyInput>(
   ignoreCase = false
 ) =>
   Object.keys(input).some((key) => {
-    let value = input[key];
-    let storedValue = stored.current[key];
-    if (
-      !ignoreCase &&
+    const value = input[key as keyof I];
+    const storedValue = stored.current[key as keyof I];
+    return !ignoreCase &&
       typeof value === "string" &&
       typeof storedValue === "string"
-    ) {
-      value = value.toUpperCase();
-      storedValue = storedValue.toUpperCase();
-    }
-    return value !== storedValue;
+      ? value.toUpperCase() !== storedValue.toUpperCase()
+      : value !== storedValue;
   });

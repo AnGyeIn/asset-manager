@@ -1,4 +1,4 @@
-import { YearMonthDate } from "../models/calendar";
+import { YearMonth, YearMonthDate } from "../models/calendar";
 import { isValidNumber } from "./validationUtils";
 
 /**
@@ -11,11 +11,19 @@ export const getZeroPaddedNumber = (num: number) =>
 
 /**
  *
+ * @param yearMonth
+ * @returns 'YYYY-MM'
+ */
+export const getMonthStringFrom = ({ year, month }: YearMonth) =>
+  `${year}-${getZeroPaddedNumber(month)}`;
+
+/**
+ *
  * @param yearMonthDate
  * @returns 'YYYY-MM-DD'
  */
 export const getDateStringFrom = ({ year, month, date }: YearMonthDate) =>
-  `${year}-${getZeroPaddedNumber(month)}-${getZeroPaddedNumber(date)}`;
+  `${getMonthStringFrom({ year, month })}-${getZeroPaddedNumber(date)}`;
 
 const numberFormat = new Intl.NumberFormat();
 export const getCurrencyStringFrom = (amount: number) =>

@@ -1,10 +1,10 @@
-export const horizontalCenteredBoxStyle = {
+export const centeredBoxStyleHorizontal = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
 };
 
-export const verticalCenterdBoxStyle = {
-  ...horizontalCenteredBoxStyle,
+export const centeredBoxStyleVertical = {
+  ...centeredBoxStyleHorizontal,
   flexDirection: "column",
 };

@@ -1,3 +1,5 @@
+import { FieldRemoved } from "../utils/typeUtils";
+
 export type DayOfWeek =
   | "MONDAY"
   | "TUESDAY"
@@ -7,15 +9,16 @@ export type DayOfWeek =
   | "SATURDAY"
   | "SUNDAY";
 
-export interface RepeatedAccountBookEntryUpdate {
+export type RepeatedAccountBookEntry = {
+  repeatedAccountBookEntryId: number;
   date?: number;
   dayOfWeek?: DayOfWeek;
   amount: number;
   title?: string;
   description?: string;
-}
+};
 
-export interface RepeatedAccountBookEntry
-  extends RepeatedAccountBookEntryUpdate {
-  repeatedAccountBookEntryId: number;
-}
+export type RepeatedAccountBookEntryUpdate = FieldRemoved<
+  RepeatedAccountBookEntry,
+  "repeatedAccountBookEntryId"
+>;

@@ -2,11 +2,11 @@ export type YearsMonths = {
   [year: number]: number[];
 };
 
-export interface YearMonth {
+export type YearMonth = {
   year: number;
   month: number;
-}
+};
 
-export interface YearMonthDate extends YearMonth {
+export type YearMonthDate = YearMonth & {
   date: number;
-}
+};
