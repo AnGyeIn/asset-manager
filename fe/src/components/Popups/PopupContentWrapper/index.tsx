@@ -4,7 +4,7 @@ import { centeredBoxStyleVertical } from "../../../styles/boxStyles";
 
 type Props = {
   children: ReactNode;
-}
+};
 const PopupContentWrapper = ({ children }: Props) => {
   return (
     <Box

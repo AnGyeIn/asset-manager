@@ -39,3 +39,5 @@ export const getCamelCaseFrom = (sentence: string) => {
     )
     .join("");
 };
+
+export const toStringFromNumber = (value: number) => value.toString();

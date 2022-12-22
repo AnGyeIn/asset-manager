@@ -7,7 +7,6 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { AnyInput } from "../../../models/input";
 import { enterKeyDown } from "../../../utils/eventUtils";
 import { getCamelCaseFrom } from "../../../utils/stringUtils";
 
@@ -22,8 +21,8 @@ type Props<I> = {
   labelKey?: keyof I;
   sx?: SxProps;
   disabled?: boolean;
-}
-const TextFieldOfInput = <I extends AnyInput>({
+};
+const InputTextField = <I,>({
   input,
   setInput,
   label,
@@ -42,7 +41,7 @@ const TextFieldOfInput = <I extends AnyInput>({
         : (getCamelCaseFrom(label!) as keyof I),
     [inLabelKey, label]
   );
-  const value = useMemo(() => input[labelKey], [input[labelKey]]);
+  const value = useMemo(() => input[labelKey], [input, labelKey]);
 
   const onChange = useCallback(
     ({ target: { value: newValue } }: ChangeEvent<HTMLInputElement>) =>
@@ -50,7 +49,7 @@ const TextFieldOfInput = <I extends AnyInput>({
         ...prevInput,
         [labelKey]: typeof value === "number" ? Number(newValue) : newValue,
       })),
-    [labelKey, value]
+    [setInput, labelKey, value]
   );
 
   const onCompletedByEnterKeyDown = useCallback(
@@ -73,4 +72,4 @@ const TextFieldOfInput = <I extends AnyInput>({
   );
 };
 
-export default memo(TextFieldOfInput);
+export default memo(InputTextField);

@@ -1,4 +1,4 @@
-import { AddCircleOutline } from "@mui/icons-material";
+import { AccessTime, AddCircleOutline } from "@mui/icons-material";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import {
   SyntheticEvent,
@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import Popup from "reactjs-popup";
 import api from "../../../api";
 import { AccountBookEntry } from "../../../models/accountBook";
 import { YearMonth, YearsMonths } from "../../../models/calendar";
@@ -15,11 +16,15 @@ import {
   centeredBoxStyleHorizontal,
   centeredBoxStyleVertical,
 } from "../../../styles/boxStyles";
-import { getMonthStringFrom } from "../../../utils/stringUtils";
+import {
+  getMonthStringFrom,
+  toStringFromNumber,
+} from "../../../utils/stringUtils";
 import { toastError, toastInfo } from "../../../utils/toastUtils";
 import { isValidNumber } from "../../../utils/validationUtils";
 import CenteredCircularProgress from "../../CircularProgresses/CenteredCircularProgress";
 import AccountBookTable from "./AccountBookTable";
+import RepeatedAccountBookEntriesPopupContent from "./RepeatedAccountBookEntriesPopupContent";
 
 const AccountBook = () => {
   const [yearsMonths, setYearsMonths] = useState<YearsMonths>({});
@@ -31,6 +36,10 @@ const AccountBook = () => {
     AccountBookEntry[]
   >([]);
   const [reloader, setReloader] = useState(false);
+  const [
+    isRepeatedAccountBookEntriesPopupOpen,
+    setIsRepeatedAccountBookEntriesPopupOpen,
+  ] = useState(false);
 
   const years = useMemo(
     () =>
@@ -41,6 +50,16 @@ const AccountBook = () => {
   );
 
   const reload = useCallback(() => setReloader((_reloader) => !_reloader), []);
+
+  const openRepeatedAccountBookEntriesPopup = useCallback(
+    () => setIsRepeatedAccountBookEntriesPopupOpen(true),
+    []
+  );
+
+  const closeRepeatedAccountBookEntriesPopup = useCallback(
+    () => setIsRepeatedAccountBookEntriesPopupOpen(false),
+    []
+  );
 
   const selectYear = useCallback(
     (_: SyntheticEvent, newYear: number) => {
@@ -154,7 +173,7 @@ const AccountBook = () => {
             <Autocomplete
               sx={{ width: "7rem" }}
               options={years}
-              getOptionLabel={(year: number) => year.toString()}
+              getOptionLabel={toStringFromNumber}
               disableClearable
               value={selectedYearMonth.year}
               onChange={selectYear}
@@ -168,7 +187,7 @@ const AccountBook = () => {
             <Autocomplete
               sx={{ width: "4rem" }}
               options={yearsMonths[selectedYearMonth.year]}
-              getOptionLabel={(month: number) => month.toString()}
+              getOptionLabel={toStringFromNumber}
               disableClearable
               value={selectedYearMonth.month}
               onChange={selectMonth}
@@ -178,8 +197,23 @@ const AccountBook = () => {
           </Box>
         )}
         {years.length > 0 && (
-          <AddCircleOutline color={"success"} onClick={createNextAccountBook} />
+          <AddCircleOutline
+            color={"success"}
+            onClick={createNextAccountBook}
+            sx={{ margin: "0 1%" }}
+          />
         )}
+        <AccessTime onClick={openRepeatedAccountBookEntriesPopup} />
+        <Popup
+          open={isRepeatedAccountBookEntriesPopupOpen}
+          modal
+          closeOnDocumentClick={false}
+          closeOnEscape={false}
+        >
+          <RepeatedAccountBookEntriesPopupContent
+            close={closeRepeatedAccountBookEntriesPopup}
+          />
+        </Popup>
       </Box>
       <Box sx={{ ...centeredBoxStyleVertical, width: "100%" }}>
         {accountBookEntries.length > 0 ? (

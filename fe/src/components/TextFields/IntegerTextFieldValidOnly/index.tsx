@@ -15,8 +15,9 @@ type Props = {
   formatter?: (value: number) => string;
   sx?: SxProps;
   disabled?: boolean;
-}
-const TextFieldOfIntegerValidOnly = ({
+  error?: boolean;
+};
+const IntegerTextFieldValidOnly = ({
   value,
   setValue,
   label,
@@ -28,9 +29,15 @@ const TextFieldOfIntegerValidOnly = ({
   formatter,
   sx,
   disabled = false,
+  error = false,
 }: Props) => {
   const valueStr = useMemo(
-    () => (formatter ? formatter(value) : value.toString()),
+    () =>
+      formatter
+        ? formatter(value)
+        : isValidNumber(value)
+        ? value.toString()
+        : "",
     [value, formatter]
   );
 
@@ -68,8 +75,9 @@ const TextFieldOfIntegerValidOnly = ({
       onBlur={onCompleted}
       onKeyDown={onCompletedByEnterKeyDown}
       disabled={disabled}
+      error={error}
     />
   );
 };
 
-export default memo(TextFieldOfIntegerValidOnly);
+export default memo(IntegerTextFieldValidOnly);

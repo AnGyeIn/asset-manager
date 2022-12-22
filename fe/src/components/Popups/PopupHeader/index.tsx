@@ -5,13 +5,13 @@ import { memo } from "react";
 type Props = {
   close: () => void;
   title: string;
-}
+};
 const PopupHeader = ({ close, title }: Props) => {
   return (
     <Box
       sx={{
         border: "1px solid black",
-        width: "100%",
+        width: "96%",
         display: "flex",
         alignItems: "center",
         padding: "1% 2%",

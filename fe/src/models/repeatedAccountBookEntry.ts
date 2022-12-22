@@ -1,13 +1,5 @@
 import { FieldRemoved } from "../utils/typeUtils";
-
-export type DayOfWeek =
-  | "MONDAY"
-  | "TUESDAY"
-  | "WEDNESDAY"
-  | "THURSDAY"
-  | "FRIDAY"
-  | "SATURDAY"
-  | "SUNDAY";
+import { DayOfWeek } from "./calendar";
 
 export type RepeatedAccountBookEntry = {
   repeatedAccountBookEntryId: number;

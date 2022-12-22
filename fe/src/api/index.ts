@@ -83,7 +83,7 @@ const api = {
       return Number(response?.data);
     },
     repeatedAccountBookEntry: async (
-      repeatedAccountBookEntry: RepeatedAccountBookEntry
+      repeatedAccountBookEntry: RepeatedAccountBookEntryUpdate
     ): Promise<number> => {
       const path = "/repeatedAccountBookEntry";
       const response = await checkResponse(POST, {

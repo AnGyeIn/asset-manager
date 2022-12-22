@@ -10,3 +10,15 @@ export type YearMonth = {
 export type YearMonthDate = YearMonth & {
   date: number;
 };
+
+export const daysOfWeek = [
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
+] as const;
+
+export type DayOfWeek = typeof daysOfWeek[number];

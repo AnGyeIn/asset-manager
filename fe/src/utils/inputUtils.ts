@@ -1,7 +1,6 @@
 import { MutableRefObject } from "react";
-import { AnyInput } from "../models/input";
 
-export const isInputChanged = <I extends AnyInput>(
+export const isInputChanged = <I extends object>(
   input: I,
   stored: MutableRefObject<I>,
   ignoreCase = false

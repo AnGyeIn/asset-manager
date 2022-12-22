@@ -1,9 +1,11 @@
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { Box, TableCell, TableRow } from "@mui/material";
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { Dispatch, memo, useCallback, useMemo, useRef, useState } from "react";
 import api from "../../../../../api";
-import { AccountBookEntry } from "../../../../../models/accountBook";
-import { AccountBookEntryTableRowInput } from "../../../../../models/input";
+import {
+  AccountBookEntry,
+  AccountBookEntryUpdate,
+} from "../../../../../models/accountBook";
 import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
 import { isInputChanged } from "../../../../../utils/inputUtils";
 import {
@@ -13,15 +15,15 @@ import {
 import { toastError, toastInfo } from "../../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCircularProgress";
-import TextFieldOfInput from "../../../../TextFields/TextFieldOfInput";
-import TextFieldOfIntegerValidOnly from "../../../../TextFields/TextFieldOfIntegerValidOnly";
+import InputTextField from "../../../../TextFields/InputTextField";
+import IntegerTextFieldValidOnly from "../../../../TextFields/IntegerTextFieldValidOnly";
 
 type Props = {
   isFirst: boolean;
   accountBookEntry: AccountBookEntry;
   accumulation: number;
   reload: () => void;
-}
+};
 const AccountBookEntryTableRow = ({
   isFirst,
   accountBookEntry: {
@@ -37,14 +39,14 @@ const AccountBookEntryTableRow = ({
   reload,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [input, setInput] = useState<AccountBookEntryTableRowInput>({
+  const [input, setInput] = useState<AccountBookEntryUpdate>({
     date,
     amount,
     title: title ?? "",
     description: description ?? "",
   });
 
-  const inputStore = useRef({
+  const inputStore = useRef<AccountBookEntryUpdate>({
     date,
     amount,
     title: title ?? "",
@@ -179,7 +181,7 @@ const AccountBookEntryTableRow = ({
         )}
       </TableCell>
       <TableCell sx={{ textAlign: "center" }}>
-        <TextFieldOfIntegerValidOnly
+        <IntegerTextFieldValidOnly
           fullWidth
           value={input.date}
           setValue={setDate}
@@ -191,7 +193,7 @@ const AccountBookEntryTableRow = ({
         />
       </TableCell>
       <TableCell sx={{ color: "red", textAlign: "right" }}>
-        <TextFieldOfIntegerValidOnly
+        <IntegerTextFieldValidOnly
           fullWidth
           value={amountPositive}
           setValue={setAmountPositive}
@@ -202,7 +204,7 @@ const AccountBookEntryTableRow = ({
         />
       </TableCell>
       <TableCell sx={{ color: "blue", textAlign: "right" }}>
-        <TextFieldOfIntegerValidOnly
+        <IntegerTextFieldValidOnly
           fullWidth
           value={amountNegative}
           setValue={setAmountNegative}
@@ -216,10 +218,10 @@ const AccountBookEntryTableRow = ({
         {useMemo(() => getCurrencyStringFrom(accumulation), [accumulation])}
       </TableCell>
       <TableCell>
-        <TextFieldOfInput
+        <InputTextField
           fullWidth
           input={input}
-          setInput={setInput}
+          setInput={setInput as Dispatch<unknown>}
           label={"title"}
           onCompleted={updateAccountBookEntry}
           sx={{ height: "1rem" }}
@@ -227,10 +229,10 @@ const AccountBookEntryTableRow = ({
         />
       </TableCell>
       <TableCell>
-        <TextFieldOfInput
+        <InputTextField
           fullWidth
           input={input}
-          setInput={setInput}
+          setInput={setInput as Dispatch<unknown>}
           label={"descripiton"}
           onCompleted={updateAccountBookEntry}
           sx={{ height: "1rem" }}
