@@ -147,7 +147,7 @@ const RepeatedAccountBookEntryTableRow = ({
       );
       reload();
     }
-  }, [repeatedAccountBookEntryId, date, dayOfWeek]);
+  }, [repeatedAccountBookEntryId, date, dayOfWeek, reload]);
 
   const setDate = useCallback(
     (newDate: number) =>
@@ -187,12 +187,14 @@ const RepeatedAccountBookEntryTableRow = ({
       <TableCell>
         {!isNew &&
           (isLoading ? (
-            <CenteredCircularProgress sx={{ height: "1rem" }} />
+            <CenteredCircularProgress sx={{ width: "2rem", height: "1rem" }} />
           ) : (
-            <RemoveCircleOutline
-              color={"error"}
-              onClick={deleteRepeatedAccountBookEntry}
-            />
+            <Box sx={centeredBoxStyleHorizontal}>
+              <RemoveCircleOutline
+                color={"error"}
+                onClick={deleteRepeatedAccountBookEntry}
+              />
+            </Box>
           ))}
       </TableCell>
       <TableCell>

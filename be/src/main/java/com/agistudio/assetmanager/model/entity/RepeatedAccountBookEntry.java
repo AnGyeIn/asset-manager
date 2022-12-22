@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Positive;
 
-import org.hibernate.annotations.DynamicInsert;
 import org.springframework.util.StringUtils;
 
 import com.agistudio.assetmanager.model.request.SaveRepeatedAccountBookEntryReq;
@@ -48,10 +47,14 @@ public class RepeatedAccountBookEntry implements Serializable {
   public void update(SaveRepeatedAccountBookEntryReq saveRepeatedAccountBookEntryReq) {
     Integer date = saveRepeatedAccountBookEntryReq.getDate();
     DayOfWeek dayOfWeek = saveRepeatedAccountBookEntryReq.getDayOfWeek();
+    Integer amount = saveRepeatedAccountBookEntryReq.getAmount();
     String title = saveRepeatedAccountBookEntryReq.getTitle();
     String description = saveRepeatedAccountBookEntryReq.getDescription();
     this.date = date;
     this.dayOfWeek = date != null ? null : dayOfWeek;
+    if (amount != null) {
+      this.amount = amount;
+    }
     if (StringUtils.hasText(title)) {
       this.title = title;
     }

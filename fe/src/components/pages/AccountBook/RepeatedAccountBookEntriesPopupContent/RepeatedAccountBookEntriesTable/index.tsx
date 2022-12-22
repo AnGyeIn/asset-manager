@@ -23,7 +23,7 @@ const RepeatedAccountBookEntriesTable = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableHeaderCell sx={{ width: "1rem" }} />
+            <TableHeaderCell sx={{ width: "2rem" }} />
             <TableHeaderCell sx={{ width: "14rem" }}>반복</TableHeaderCell>
             <TableHeaderCell sx={{ width: "8rem" }}>수입/지출</TableHeaderCell>
             <TableHeaderCell sx={{ width: "8rem" }}>항목</TableHeaderCell>

@@ -1,5 +1,6 @@
 package com.agistudio.assetmanager.service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.agistudio.assetmanager.model.entity.AccountBookEntry;
+import com.agistudio.assetmanager.model.entity.AccountBookEntry.AccountBookEntryBuilder;
 import com.agistudio.assetmanager.model.request.CreateAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.SaveAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.YearAndMonthQuery;
 import com.agistudio.assetmanager.repository.AccountBookEntryRepository;
+import com.agistudio.assetmanager.repository.RepeatedAccountBookEntryRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountBookService {
 
   private final AccountBookEntryRepository accountBookEntryRepository;
+  private final RepeatedAccountBookEntryRepository repeatedAccountBookEntryRepository;
 
   public Map<Integer, List<Integer>> getAccountBooksYearsAndMonths() {
     log.info("getAccountBooksYearsAndMonths");
@@ -36,6 +40,33 @@ public class AccountBookService {
       yearMonthListMap.computeIfAbsent(year, (_year) -> new LinkedList<>()).add(month);
     });
     return yearMonthListMap;
+  }
+
+  private void instantiateRepeatedAccountBookEntries(int year, int month) {
+    log.info("instantiateRepeatedAccountBookEntries - year: {} / month: {}", year, month);
+    List<AccountBookEntry> accountBookEntries = new LinkedList<>();
+    repeatedAccountBookEntryRepository.findAll().forEach(repeatedAccountBookEntry -> {
+      AccountBookEntryBuilder builder = AccountBookEntry.builder().year(year).month(month)
+          .amount(repeatedAccountBookEntry.getAmount()).title(repeatedAccountBookEntry.getTitle())
+          .description(repeatedAccountBookEntry.getDescription());
+      Integer date = repeatedAccountBookEntry.getDate();
+      if (date != null) {
+        accountBookEntries.add(builder.date(date).build());
+      } else {
+        int dayOfWeek = repeatedAccountBookEntry.getDayOfWeek().getValue();
+        LocalDate dayOfMonth = LocalDate.of(year, month, 1);
+        int firstDay = dayOfMonth.getDayOfWeek().getValue();
+        int daysOffset = (dayOfWeek - firstDay + 7) % 7;
+        dayOfMonth = dayOfMonth.plusDays(daysOffset);
+        while (dayOfMonth.getMonth().getValue() == month) {
+          accountBookEntries.add(builder.date(dayOfMonth.getDayOfMonth()).build());
+          dayOfMonth = dayOfMonth.plusDays(7);
+        }
+      }
+    });
+    if (!accountBookEntries.isEmpty()) {
+      accountBookEntryRepository.saveAll(accountBookEntries);
+    }
   }
 
   public Integer createAccountBook(YearAndMonthQuery yearAndMonthQuery) {
@@ -52,14 +83,18 @@ public class AccountBookService {
       prevMonth = 12;
     }
     Integer initAmount = accountBookEntryRepository.getSumAmountByYearAndMonth(prevYear, prevMonth);
-    return accountBookEntryRepository.save(AccountBookEntry.builder()
+    AccountBookEntry initEntry = accountBookEntryRepository.save(AccountBookEntry.builder()
         .year(year)
         .month(month)
         .date(1)
         .amount(initAmount)
         .title("전월")
         .description("이월금")
-        .build()).getAccountBookEntryId();
+        .build());
+
+    instantiateRepeatedAccountBookEntries(year, month);
+
+    return initEntry.getAccountBookEntryId();
   }
 
   public List<AccountBookEntry> getAccountBookEntries(YearAndMonthQuery yearAndMonthQuery) {
