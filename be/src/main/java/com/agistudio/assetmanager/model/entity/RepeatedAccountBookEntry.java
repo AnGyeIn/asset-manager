@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@DynamicInsert
 @Entity
 @Getter
 @Builder
@@ -51,11 +50,8 @@ public class RepeatedAccountBookEntry implements Serializable {
     DayOfWeek dayOfWeek = saveRepeatedAccountBookEntryReq.getDayOfWeek();
     String title = saveRepeatedAccountBookEntryReq.getTitle();
     String description = saveRepeatedAccountBookEntryReq.getDescription();
-    if (date != null) {
-      this.date = date;
-    } else if (dayOfWeek != null) {
-      this.dayOfWeek = dayOfWeek;
-    }
+    this.date = date;
+    this.dayOfWeek = date != null ? null : dayOfWeek;
     if (StringUtils.hasText(title)) {
       this.title = title;
     }
