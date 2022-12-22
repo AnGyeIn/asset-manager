@@ -11,6 +11,8 @@ public class PathPattern {
   public static final String ACCOUNT_BOOKS_YEARS_AND_MONTHS = ACCOUNT_BOOK + "s/yearsAndMonths";
   public static final String ACCOUNT_BOOK_ENTRY_UNKNOWN = ACCOUNT_BOOK + "Entry";
   public static final String ACCOUNT_BOOK_ENTRIES = ACCOUNT_BOOK + "Entries";
+  public static final String ACCOUNT_BOOK_ENTRIES_TITLES_AND_DESCRIPTIONS = ACCOUNT_BOOK_ENTRIES
+      + "/titlesAndDescriptions";
   public static final String ACCOUNT_BOOK_ENTRY = ACCOUNT_BOOK_ENTRIES + "/{accountBookEntryId}";
 
   public static final String REPEATED_ACCOUNT_BOOK_ENTRY_UNKNOWN = BASE + "/repeatedAccountBookEntry";

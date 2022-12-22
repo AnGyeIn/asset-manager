@@ -2,6 +2,7 @@ package com.agistudio.assetmanager.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.Tuple;
 
@@ -50,4 +51,14 @@ public interface AccountBookEntryRepository extends JpaRepository<AccountBookEnt
   public Integer getSumAmountByYearAndMonth(@Param(value = "year") Integer year, @Param(value = "month") Integer month);
 
   public Optional<AccountBookEntry> findFirstByYearAndMonthOrderByAccountBookEntryId(Integer year, Integer month);
+
+  @Query(value = "SELECT DISTINCT(title)"
+              + " FROM account_book_entry",
+         nativeQuery = true)
+  public Set<String> findAllTitle();
+
+  @Query(value = "SELECT DISTINCT(description)"
+              + " FROM account_book_entry",
+         nativeQuery = true)
+  public Set<String> findAllDescription();
 }

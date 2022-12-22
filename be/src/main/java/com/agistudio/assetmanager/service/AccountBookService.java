@@ -17,6 +17,7 @@ import com.agistudio.assetmanager.model.entity.AccountBookEntry.AccountBookEntry
 import com.agistudio.assetmanager.model.request.CreateAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.SaveAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.YearAndMonthQuery;
+import com.agistudio.assetmanager.model.response.TitlesAndDescriptions;
 import com.agistudio.assetmanager.repository.AccountBookEntryRepository;
 import com.agistudio.assetmanager.repository.RepeatedAccountBookEntryRepository;
 
@@ -102,6 +103,14 @@ public class AccountBookService {
     return accountBookEntryRepository.findAllByYearAndMonthOrderByDateAscAccountBookEntryIdAsc(
         yearAndMonthQuery.getYear(),
         yearAndMonthQuery.getMonth());
+  }
+
+  public TitlesAndDescriptions getAccountBookEntrTitlesAndDescriptions() {
+    log.info("getAccountBookEntriesTitlesAndDescriptions");
+    TitlesAndDescriptions titlesAndDescriptions = TitlesAndDescriptions.builder().build();
+    titlesAndDescriptions.getTitles().addAll(accountBookEntryRepository.findAllTitle());
+    titlesAndDescriptions.getDescriptions().addAll(accountBookEntryRepository.findAllDescription());
+    return titlesAndDescriptions;
   }
 
   public Integer createAccountBookEntry(CreateAccountBookEntryReq createAccountBookEntryReq) {

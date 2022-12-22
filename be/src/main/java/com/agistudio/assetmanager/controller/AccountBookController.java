@@ -19,6 +19,7 @@ import com.agistudio.assetmanager.model.entity.AccountBookEntry;
 import com.agistudio.assetmanager.model.request.CreateAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.SaveAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.YearAndMonthQuery;
+import com.agistudio.assetmanager.model.response.TitlesAndDescriptions;
 import com.agistudio.assetmanager.service.AccountBookService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,6 +54,13 @@ public class AccountBookController {
   public List<AccountBookEntry> getAccountBookEntries(@Valid YearAndMonthQuery yearAndMonthQuery) {
     log.info("getAccountBookEntries: {}", yearAndMonthQuery);
     return accountBookService.getAccountBookEntries(yearAndMonthQuery);
+  }
+
+  @Operation(summary = "get list of all the titles and descriptions of account book entries", tags = SwaggerTag.ACCOUNT_BOOK)
+  @GetMapping(path = PathPattern.ACCOUNT_BOOK_ENTRIES_TITLES_AND_DESCRIPTIONS)
+  public TitlesAndDescriptions getAccountBookEntriesTitlesAndDescriptions() {
+    log.info("getAccountBookEntriesTitlesAndDescriptions");
+    return accountBookService.getAccountBookEntrTitlesAndDescriptions();
   }
 
   @Operation(summary = "create account book entry", tags = SwaggerTag.ACCOUNT_BOOK)
