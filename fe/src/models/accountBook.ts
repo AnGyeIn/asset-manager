@@ -14,3 +14,8 @@ export type AccountBookEntryUpdate = FieldRemoved<
   AccountBookEntry,
   "accountBookEntryId" | "year" | "month"
 >;
+
+export type TitlesDescriptions = {
+  titles: string[];
+  descriptions: string[];
+};

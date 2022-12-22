@@ -7,15 +7,18 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useDispatch } from "react-redux";
 import Popup from "reactjs-popup";
 import api from "../../../api";
 import { AccountBookEntry } from "../../../models/accountBook";
 import { YearMonth, YearsMonths } from "../../../models/calendar";
 import { Canceler } from "../../../models/control";
+import { setTitlesDescriptions } from "../../../store/slices/titlesDescriptionsSlice";
 import {
   centeredBoxStyleHorizontal,
   centeredBoxStyleVertical,
 } from "../../../styles/boxStyles";
+import { getInputFieldSetterWithEvent } from "../../../utils/inputUtils";
 import {
   getMonthStringFrom,
   toStringFromNumber,
@@ -27,6 +30,8 @@ import AccountBookTable from "./AccountBookTable";
 import RepeatedAccountBookEntriesPopupContent from "./RepeatedAccountBookEntriesPopupContent";
 
 const AccountBook = () => {
+  const dispatch = useDispatch();
+
   const [yearsMonths, setYearsMonths] = useState<YearsMonths>({});
   const [selectedYearMonth, setSelectedYearMonth] = useState<YearMonth>({
     year: NaN,
@@ -62,27 +67,20 @@ const AccountBook = () => {
   );
 
   const selectYear = useCallback(
-    (_: SyntheticEvent, newYear: number) => {
-      if (selectedYearMonth.year !== newYear) {
-        setSelectedYearMonth({
-          year: newYear,
-          month: yearsMonths[newYear][0],
-        });
-      }
-    },
-    [yearsMonths, selectedYearMonth.year]
+    getInputFieldSetterWithEvent<YearMonth, number, SyntheticEvent>(
+      setSelectedYearMonth,
+      "year",
+      (newYear) => (isValidNumber(newYear) ? yearsMonths[newYear!][0] : NaN)
+    ),
+    [yearsMonths]
   );
 
   const selectMonth = useCallback(
-    (_: SyntheticEvent, newMonth: number) => {
-      if (selectedYearMonth.month !== newMonth) {
-        setSelectedYearMonth((prevSelectedYearMonth) => ({
-          ...prevSelectedYearMonth,
-          month: newMonth,
-        }));
-      }
-    },
-    [selectedYearMonth.month]
+    getInputFieldSetterWithEvent<YearMonth, number, SyntheticEvent>(
+      setSelectedYearMonth,
+      "month"
+    ),
+    []
   );
 
   const fetchYearsMonths = useCallback(async (canceler?: Canceler) => {
@@ -164,6 +162,20 @@ const AccountBook = () => {
       canceler.cancel = true;
     };
   }, [selectedYearMonth, reloader]);
+
+  useEffect(() => {
+    const canceler = { cancel: false };
+    (async () => {
+      const titlesDescriptions =
+        await api.get.accountBookEntriesTitlesAndDescriptions();
+      if (!canceler.cancel) {
+        dispatch(setTitlesDescriptions(titlesDescriptions));
+      }
+    })();
+    return () => {
+      canceler.cancel = true;
+    };
+  }, [reloader]);
 
   return (
     <>

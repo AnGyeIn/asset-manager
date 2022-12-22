@@ -41,3 +41,6 @@ export const getCamelCaseFrom = (sentence: string) => {
 };
 
 export const toStringFromNumber = (value: number) => value.toString();
+
+export const getNormalizedString = (value?: string | null) =>
+  value ? value : "";

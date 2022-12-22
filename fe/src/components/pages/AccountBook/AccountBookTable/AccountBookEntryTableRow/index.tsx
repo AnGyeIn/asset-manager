@@ -1,21 +1,42 @@
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
-import { Box, TableCell, TableRow } from "@mui/material";
-import { Dispatch, memo, useCallback, useMemo, useRef, useState } from "react";
+import {
+  Autocomplete,
+  Box,
+  TableCell,
+  TableRow,
+  TextField,
+} from "@mui/material";
+import {
+  memo,
+  SyntheticEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useSelector } from "react-redux";
 import api from "../../../../../api";
 import {
   AccountBookEntry,
   AccountBookEntryUpdate,
 } from "../../../../../models/accountBook";
+import { RootState } from "../../../../../models/store";
 import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
-import { isInputChanged } from "../../../../../utils/inputUtils";
+import { enterKeyDown } from "../../../../../utils/eventUtils";
+import {
+  getInputFieldSetter,
+  getInputFieldSetterFromChangeEvent,
+  getInputFieldSetterWithEvent,
+  isInputChanged,
+} from "../../../../../utils/inputUtils";
 import {
   getCurrencyStringFrom,
   getDateStringFrom,
+  getNormalizedString,
 } from "../../../../../utils/stringUtils";
 import { toastError, toastInfo } from "../../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCircularProgress";
-import InputTextField from "../../../../TextFields/InputTextField";
 import IntegerTextFieldValidOnly from "../../../../TextFields/IntegerTextFieldValidOnly";
 
 type Props = {
@@ -38,6 +59,10 @@ const AccountBookEntryTableRow = ({
   accumulation,
   reload,
 }: Props) => {
+  const { titles, descriptions } = useSelector(
+    (state: RootState) => state.titlesDescriptions
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState<AccountBookEntryUpdate>({
     date,
@@ -115,14 +140,12 @@ const AccountBookEntryTableRow = ({
   }, [accountBookEntryId, year, month, date, reload]);
 
   const setDate = useCallback(
-    (newDate: number) =>
-      setInput((prevInput) => ({ ...prevInput, date: newDate })),
+    getInputFieldSetter<AccountBookEntryUpdate, number>(setInput, "date"),
     []
   );
 
   const setAmount = useCallback(
-    (newAmount: number) =>
-      setInput((prevInput) => ({ ...prevInput, amount: newAmount })),
+    getInputFieldSetter<AccountBookEntryUpdate, number>(setInput, "amount"),
     []
   );
 
@@ -134,6 +157,40 @@ const AccountBookEntryTableRow = ({
   const setAmountNegative = useCallback(
     (newValue: number) => setAmount(-Math.abs(newValue)),
     [setAmount]
+  );
+
+  const selectTitle = useCallback(
+    getInputFieldSetterWithEvent<
+      AccountBookEntryUpdate,
+      string,
+      SyntheticEvent
+    >(setInput, "title"),
+    []
+  );
+
+  const typeTitle = useCallback(
+    getInputFieldSetterFromChangeEvent<AccountBookEntryUpdate>(
+      setInput,
+      "title"
+    ),
+    []
+  );
+
+  const selectDescription = useCallback(
+    getInputFieldSetterWithEvent<
+      AccountBookEntryUpdate,
+      string,
+      SyntheticEvent
+    >(setInput, "description"),
+    []
+  );
+
+  const typeDescription = useCallback(
+    getInputFieldSetterFromChangeEvent<AccountBookEntryUpdate>(
+      setInput,
+      "description"
+    ),
+    []
   );
 
   const updateAccountBookEntry = useCallback(async () => {
@@ -159,6 +216,11 @@ const AccountBookEntryTableRow = ({
       );
     }
   }, [accountBookEntryId, input, reload, year, month, date]);
+
+  const updateAccountBookEntryByEnterKeyDown = useCallback(
+    enterKeyDown(updateAccountBookEntry),
+    [updateAccountBookEntry]
+  );
 
   return (
     <TableRow sx={{ backgroundColor: isPast ? "lightgray" : "white" }}>
@@ -218,25 +280,50 @@ const AccountBookEntryTableRow = ({
         {useMemo(() => getCurrencyStringFrom(accumulation), [accumulation])}
       </TableCell>
       <TableCell>
-        <InputTextField
+        <Autocomplete
           fullWidth
-          input={input}
-          setInput={setInput as Dispatch<unknown>}
-          label={"title"}
-          onCompleted={updateAccountBookEntry}
-          sx={{ height: "1rem" }}
+          options={titles}
+          getOptionLabel={getNormalizedString}
+          value={input.title}
+          onChange={selectTitle}
+          onBlur={updateAccountBookEntry}
+          onKeyDown={updateAccountBookEntryByEnterKeyDown}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                sx: {
+                  height: "1rem",
+                },
+              }}
+              onChange={typeTitle}
+            />
+          )}
           disabled={isFirst}
         />
       </TableCell>
       <TableCell>
-        <InputTextField
+        <Autocomplete
           fullWidth
-          input={input}
-          setInput={setInput as Dispatch<unknown>}
-          label={"descripiton"}
-          onCompleted={updateAccountBookEntry}
-          sx={{ height: "1rem" }}
-          disabled={isFirst}
+          options={descriptions}
+          getOptionLabel={getNormalizedString}
+          value={input.description}
+          onChange={selectDescription}
+          onBlur={updateAccountBookEntry}
+          onKeyDown={updateAccountBookEntry}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                sx: {
+                  height: "1rem",
+                },
+              }}
+              onChange={typeDescription}
+            />
+          )}
         />
       </TableCell>
     </TableRow>

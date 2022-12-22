@@ -30,7 +30,7 @@ const AccountBookTable = ({ accountBookEntries, reload }: Props) => {
             <TableHeaderCell sx={{ width: "8rem" }}>수입</TableHeaderCell>
             <TableHeaderCell sx={{ width: "8rem" }}>지출</TableHeaderCell>
             <TableHeaderCell sx={{ width: "8rem" }}>계</TableHeaderCell>
-            <TableHeaderCell sx={{ width: "8rem" }}>항목</TableHeaderCell>
+            <TableHeaderCell sx={{ width: "20rem" }}>항목</TableHeaderCell>
             <TableHeaderCell>비고</TableHeaderCell>
           </TableRow>
         </TableHead>

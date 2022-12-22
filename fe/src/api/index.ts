@@ -2,6 +2,7 @@ import axios, { AxiosResponse, isAxiosError } from "axios";
 import {
   AccountBookEntry,
   AccountBookEntryUpdate,
+  TitlesDescriptions,
 } from "../models/accountBook";
 import { YearMonth, YearMonthDate, YearsMonths } from "../models/calendar";
 import {
@@ -52,6 +53,17 @@ const api = {
       const response = await checkResponse(GET, { path });
       return response?.data ?? {};
     },
+    accountBookEntriesTitlesAndDescriptions:
+      async (): Promise<TitlesDescriptions> => {
+        const path = "/accountBookEntries/titlesAndDescriptions";
+        const response = await checkResponse(GET, { path });
+        return (
+          response?.data ?? {
+            titles: [],
+            descriptions: [],
+          }
+        );
+      },
     accountBookEntries: async (
       yearMonth: YearMonth
     ): Promise<AccountBookEntry[]> => {

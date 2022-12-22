@@ -1,8 +1,10 @@
 import { AddCircleOutline } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import api from "../../../../api";
 import { RepeatedAccountBookEntry } from "../../../../models/repeatedAccountBookEntry";
+import { setTitlesDescriptions } from "../../../../store/slices/titlesDescriptionsSlice";
 import { centeredBoxStyleVertical } from "../../../../styles/boxStyles";
 import { isValidNumber } from "../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../CircularProgresses/CenteredCircularProgress";
@@ -14,6 +16,8 @@ type Props = {
   close: () => void;
 };
 const RepeatedAccountBookEntriesPopupContent = ({ close }: Props) => {
+  const dispatch = useDispatch();
+
   const [repeatedAccountBookEntries, setRepeatedAccountBookEntries] = useState<
     RepeatedAccountBookEntry[]
   >([]);
@@ -51,6 +55,7 @@ const RepeatedAccountBookEntriesPopupContent = ({ close }: Props) => {
 
   useEffect(() => {
     const canceler = { cancel: false };
+
     (async () => {
       setIsLoading(true);
       const _repeatedAccountBookEntries =
@@ -59,6 +64,15 @@ const RepeatedAccountBookEntriesPopupContent = ({ close }: Props) => {
         setRepeatedAccountBookEntries(_repeatedAccountBookEntries);
       }
     })();
+
+    (async () => {
+      const titlesDesriptions =
+        await api.get.accountBookEntriesTitlesAndDescriptions();
+      if (!canceler.cancel) {
+        dispatch(setTitlesDescriptions(titlesDesriptions));
+      }
+    })();
+
     return () => {
       canceler.cancel = true;
     };

@@ -7,7 +7,6 @@ import {
   TextField,
 } from "@mui/material";
 import {
-  Dispatch,
   memo,
   SyntheticEvent,
   useCallback,
@@ -15,20 +14,26 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import api from "../../../../../../api";
 import { DayOfWeek, daysOfWeek } from "../../../../../../models/calendar";
 import {
   RepeatedAccountBookEntry,
   RepeatedAccountBookEntryUpdate,
 } from "../../../../../../models/repeatedAccountBookEntry";
+import { RootState } from "../../../../../../models/store";
 import { centeredBoxStyleHorizontal } from "../../../../../../styles/boxStyles";
 import { enterKeyDown } from "../../../../../../utils/eventUtils";
-import { isInputChanged } from "../../../../../../utils/inputUtils";
-import { getCurrencyStringFrom } from "../../../../../../utils/stringUtils";
+import {
+  getInputFieldSetter,
+  getInputFieldSetterFromChangeEvent,
+  getInputFieldSetterWithEvent,
+  isInputChanged,
+} from "../../../../../../utils/inputUtils";
+import { getCurrencyStringFrom, getNormalizedString } from "../../../../../../utils/stringUtils";
 import { toastError, toastInfo } from "../../../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../../CircularProgresses/CenteredCircularProgress";
-import InputTextField from "../../../../../TextFields/InputTextField";
 import IntegerTextFieldValidOnly from "../../../../../TextFields/IntegerTextFieldValidOnly";
 
 type Props = {
@@ -46,6 +51,10 @@ const RepeatedAccountBookEntryTableRow = ({
   },
   reload,
 }: Props) => {
+  const { titles, descriptions } = useSelector(
+    (state: RootState) => state.titlesDescriptions
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState<RepeatedAccountBookEntryUpdate>({
     date,
@@ -150,35 +159,71 @@ const RepeatedAccountBookEntryTableRow = ({
   }, [repeatedAccountBookEntryId, date, dayOfWeek, reload]);
 
   const setDate = useCallback(
-    (newDate: number) =>
-      setInput((prevInput) => ({
-        ...prevInput,
-        date: newDate,
-        dayOfWeek: undefined,
-      })),
+    getInputFieldSetter<RepeatedAccountBookEntryUpdate, number>(
+      setInput,
+      "date",
+      () => ({ dayOfWeek: undefined })
+    ),
     []
   );
 
   const setDayOfWeek = useCallback(
-    (_: SyntheticEvent, newDayOfWeek: DayOfWeek | null) =>
-      setInput((prevInput) =>
-        newDayOfWeek === null
-          ? {
-              ...prevInput,
-              dayOfWeek: undefined,
-            }
-          : {
-              ...prevInput,
-              date: NaN,
-              dayOfWeek: newDayOfWeek,
-            }
-      ),
+    getInputFieldSetterWithEvent<
+      RepeatedAccountBookEntryUpdate,
+      DayOfWeek,
+      SyntheticEvent
+    >(setInput, "dayOfWeek", (newDayOfWeek) =>
+      newDayOfWeek
+        ? {
+            date: NaN,
+            dayOfWeek: newDayOfWeek,
+          }
+        : {
+            dayOfWeek: undefined,
+          }
+    ),
     []
   );
 
   const setAmount = useCallback(
-    (newAmount: number) =>
-      setInput((prevInput) => ({ ...prevInput, amount: newAmount })),
+    getInputFieldSetter<RepeatedAccountBookEntryUpdate, number>(
+      setInput,
+      "amount"
+    ),
+    []
+  );
+
+  const selectTitle = useCallback(
+    getInputFieldSetterWithEvent<
+      RepeatedAccountBookEntryUpdate,
+      string,
+      SyntheticEvent
+    >(setInput, "title"),
+    []
+  );
+
+  const typeTitle = useCallback(
+    getInputFieldSetterFromChangeEvent<RepeatedAccountBookEntryUpdate>(
+      setInput,
+      "title"
+    ),
+    []
+  );
+
+  const selectDescription = useCallback(
+    getInputFieldSetterWithEvent<
+      RepeatedAccountBookEntryUpdate,
+      string,
+      SyntheticEvent
+    >(setInput, "description"),
+    []
+  );
+
+  const typeDescription = useCallback(
+    getInputFieldSetterFromChangeEvent<RepeatedAccountBookEntryUpdate>(
+      setInput,
+      "description"
+    ),
     []
   );
 
@@ -251,23 +296,49 @@ const RepeatedAccountBookEntryTableRow = ({
         />
       </TableCell>
       <TableCell>
-        <InputTextField
+        <Autocomplete
           fullWidth
-          input={input}
-          setInput={setInput as Dispatch<unknown>}
-          label={"title"}
-          onCompleted={saveRepeatedAccountBookEntry}
-          sx={{ height: "1rem" }}
+          options={titles}
+          getOptionLabel={getNormalizedString}
+          value={input.title}
+          onChange={selectTitle}
+          onBlur={saveRepeatedAccountBookEntry}
+          onKeyDown={saveRepeatedAccountBookEntryByEnterKeyDown}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                sx: {
+                  height: "1rem",
+                },
+              }}
+              onChange={typeTitle}
+            />
+          )}
         />
       </TableCell>
       <TableCell>
-        <InputTextField
+        <Autocomplete
           fullWidth
-          input={input}
-          setInput={setInput as Dispatch<unknown>}
-          label={"description"}
-          onCompleted={saveRepeatedAccountBookEntry}
-          sx={{ height: "1rem" }}
+          options={descriptions}
+          getOptionLabel={getNormalizedString}
+          value={input.description}
+          onChange={selectDescription}
+          onBlur={saveRepeatedAccountBookEntry}
+          onKeyDown={saveRepeatedAccountBookEntryByEnterKeyDown}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputProps={{
+                ...params.inputProps,
+                sx: {
+                  height: "1rem",
+                },
+              }}
+              onChange={typeDescription}
+            />
+          )}
         />
       </TableCell>
     </TableRow>
