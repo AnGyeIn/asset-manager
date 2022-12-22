@@ -53,12 +53,14 @@ public interface AccountBookEntryRepository extends JpaRepository<AccountBookEnt
   public Optional<AccountBookEntry> findFirstByYearAndMonthOrderByAccountBookEntryId(Integer year, Integer month);
 
   @Query(value = "SELECT DISTINCT(title)"
-              + " FROM account_book_entry",
+              + " FROM account_book_entry"
+              + " WHERE title IS NOT NULL",
          nativeQuery = true)
   public Set<String> findAllTitle();
 
   @Query(value = "SELECT DISTINCT(description)"
-              + " FROM account_book_entry",
+              + " FROM account_book_entry"
+              + " WHERE description IS NOT NULL",
          nativeQuery = true)
   public Set<String> findAllDescription();
 }
