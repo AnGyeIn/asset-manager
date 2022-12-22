@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Tuple;
 
@@ -108,8 +109,12 @@ public class AccountBookService {
   public TitlesAndDescriptions getAccountBookEntrTitlesAndDescriptions() {
     log.info("getAccountBookEntriesTitlesAndDescriptions");
     TitlesAndDescriptions titlesAndDescriptions = TitlesAndDescriptions.builder().build();
-    titlesAndDescriptions.getTitles().addAll(accountBookEntryRepository.findAllTitle());
-    titlesAndDescriptions.getDescriptions().addAll(accountBookEntryRepository.findAllDescription());
+    Set<String> titles = titlesAndDescriptions.getTitles();
+    titles.addAll(accountBookEntryRepository.findAllTitle());
+    titles.addAll(repeatedAccountBookEntryRepository.findAllTitles());
+    Set<String> descriptions = titlesAndDescriptions.getDescriptions();
+    descriptions.addAll(accountBookEntryRepository.findAllDescription());
+    descriptions.addAll(repeatedAccountBookEntryRepository.findAllDescriptions());
     return titlesAndDescriptions;
   }
 
