@@ -99,7 +99,8 @@ public class AccountBookService {
 
   public List<AccountBookEntry> getAccountBookEntries(YearAndMonthQuery yearAndMonthQuery) {
     log.info("getAccountBookEntries");
-    return accountBookEntryRepository.findAllByYearAndMonthOrderByDate(yearAndMonthQuery.getYear(),
+    return accountBookEntryRepository.findAllByYearAndMonthOrderByDateAscAccountBookEntryIdAsc(
+        yearAndMonthQuery.getYear(),
         yearAndMonthQuery.getMonth());
   }
 

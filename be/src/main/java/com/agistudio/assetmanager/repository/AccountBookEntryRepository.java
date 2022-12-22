@@ -27,7 +27,7 @@ public interface AccountBookEntryRepository extends JpaRepository<AccountBookEnt
          nativeQuery = true)
   public List<Tuple> findAllYearAndMonth();
 
-  public List<AccountBookEntry> findAllByYearAndMonthOrderByDate(Integer year, Integer month);
+  public List<AccountBookEntry> findAllByYearAndMonthOrderByDateAscAccountBookEntryIdAsc(Integer year, Integer month);
 
   @Query(value = "SELECT DISTINCT year"
               + "                ,month"
