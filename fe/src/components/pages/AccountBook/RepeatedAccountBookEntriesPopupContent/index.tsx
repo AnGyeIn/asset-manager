@@ -85,7 +85,12 @@ const RepeatedAccountBookEntriesPopupContent = ({ close }: Props) => {
   return (
     <PopupContentWrapper>
       <Box
-        sx={{ ...centeredBoxStyleVertical, width: "90%", background: "white" }}
+        sx={{
+          ...centeredBoxStyleVertical,
+          width: "90%",
+          maxHeight: "90%",
+          background: "white",
+        }}
       >
         <PopupHeader close={close} title={"월별 고정 항목"} />
         <Box sx={{ width: "100%" }}>
