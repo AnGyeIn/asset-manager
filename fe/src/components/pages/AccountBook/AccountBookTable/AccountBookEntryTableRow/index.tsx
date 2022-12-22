@@ -311,7 +311,7 @@ const AccountBookEntryTableRow = ({
           value={input.description}
           onChange={selectDescription}
           onBlur={updateAccountBookEntry}
-          onKeyDown={updateAccountBookEntry}
+          onKeyDown={updateAccountBookEntryByEnterKeyDown}
           renderInput={(params) => (
             <TextField
               {...params}
