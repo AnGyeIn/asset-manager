@@ -40,13 +40,13 @@ import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCir
 import IntegerTextFieldValidOnly from "../../../../TextFields/IntegerTextFieldValidOnly";
 
 type Props = {
-  isFirst: boolean;
+  isFirst?: boolean;
   accountBookEntry: AccountBookEntry;
   accumulation: number;
   reload: () => void;
 };
 const AccountBookEntryTableRow = ({
-  isFirst,
+  isFirst = false,
   accountBookEntry: {
     accountBookEntryId,
     year,

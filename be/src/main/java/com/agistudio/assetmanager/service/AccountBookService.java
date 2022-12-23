@@ -90,8 +90,7 @@ public class AccountBookService {
         .month(month)
         .date(1)
         .amount(initAmount)
-        .title("전월")
-        .description("이월금")
+        .title("이월금")
         .build());
 
     instantiateRepeatedAccountBookEntries(year, month);
