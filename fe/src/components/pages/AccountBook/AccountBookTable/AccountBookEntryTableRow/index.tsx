@@ -324,6 +324,7 @@ const AccountBookEntryTableRow = ({
               onChange={typeDescription}
             />
           )}
+          disabled={isFirst}
         />
       </TableCell>
     </TableRow>

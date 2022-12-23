@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Positive;
 
-import org.springframework.util.StringUtils;
-
 import com.agistudio.assetmanager.model.request.SaveRepeatedAccountBookEntryReq;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -55,10 +53,10 @@ public class RepeatedAccountBookEntry implements Serializable {
     if (amount != null) {
       this.amount = amount;
     }
-    if (StringUtils.hasText(title)) {
+    if (title != null) {
       this.title = title;
     }
-    if (StringUtils.hasText(description)) {
+    if (description != null) {
       this.description = description;
     }
   }

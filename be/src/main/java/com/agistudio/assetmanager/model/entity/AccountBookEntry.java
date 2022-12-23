@@ -11,7 +11,6 @@ import javax.validation.constraints.Positive;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.util.StringUtils;
 
 import com.agistudio.assetmanager.model.request.SaveAccountBookEntryReq;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -70,10 +69,10 @@ public class AccountBookEntry implements Serializable {
       isAmountChanged = this.amount != amount;
       this.amount = amount;
     }
-    if (StringUtils.hasText(title)) {
+    if (title != null) {
       this.title = title;
     }
-    if (StringUtils.hasText(description)) {
+    if (description != null) {
       this.description = description;
     }
     return isAmountChanged;
