@@ -19,7 +19,9 @@ import {
   centeredBoxStyleVertical,
 } from "../../../styles/boxStyles";
 import { getInputFieldSetterWithEvent } from "../../../utils/inputUtils";
+import { binarySearchMaximizing } from "../../../utils/searchUtils";
 import {
+  getCurrencyStringFrom,
   getMonthStringFrom,
   toStringFromNumber,
 } from "../../../utils/stringUtils";
@@ -28,6 +30,7 @@ import { isValidNumber } from "../../../utils/validationUtils";
 import CenteredCircularProgress from "../../CircularProgresses/CenteredCircularProgress";
 import AccountBookTable from "./AccountBookTable";
 import RepeatedAccountBookEntriesPopupContent from "./RepeatedAccountBookEntriesPopupContent";
+import { infoTextBoxStyle } from "./styles";
 
 const AccountBook = () => {
   const dispatch = useDispatch();
@@ -53,6 +56,34 @@ const AccountBook = () => {
         .sort((a, b) => a - b),
     [yearsMonths]
   );
+
+  const { totIncome, totExpenditure, netIncome, currValance } = useMemo(() => {
+    let _totIncome = 0;
+    let _totExpenditure = 0;
+    accountBookEntries.forEach(({ amount }, index) => {
+      if (index > 0) {
+        if (amount > 0) {
+          _totIncome += amount;
+        } else if (amount < 0) {
+          _totExpenditure += amount;
+        }
+      }
+    });
+
+    const today = new Date().getDate();
+    const currIdx = binarySearchMaximizing(accountBookEntries, ({ date }) =>
+      date > today ? -1 : 0
+    );
+
+    return {
+      totIncome: _totIncome,
+      totExpenditure: _totExpenditure,
+      netIncome: _totIncome + _totExpenditure,
+      currValance: accountBookEntries
+        .slice(0, currIdx + 1)
+        .reduce((valance, { amount }) => valance + amount, 0),
+    };
+  }, [accountBookEntries]);
 
   const reload = useCallback(() => setReloader((_reloader) => !_reloader), []);
 
@@ -226,8 +257,42 @@ const AccountBook = () => {
             close={closeRepeatedAccountBookEntriesPopup}
           />
         </Popup>
+        {accountBookEntries.length > 0 && (
+          <Box sx={{ display: "flex", flex: 1 }}>
+            <Box sx={infoTextBoxStyle}>
+              총 수입 :&nbsp;
+              <Typography color={"red"}>
+                {getCurrencyStringFrom(totIncome)}
+              </Typography>
+            </Box>
+            <Box sx={infoTextBoxStyle}>
+              총 지출 :&nbsp;
+              <Typography color={"blue"}>
+                {getCurrencyStringFrom(totExpenditure)}
+              </Typography>
+            </Box>
+            <Box sx={infoTextBoxStyle}>
+              월 수입 :&nbsp;
+              <Typography
+                color={netIncome > 0 ? "red" : netIncome < 0 ? "blue" : "black"}
+              >
+                {getCurrencyStringFrom(netIncome)}
+              </Typography>
+            </Box>
+            <Box sx={infoTextBoxStyle}>
+              현재 잔고 : {getCurrencyStringFrom(currValance)}
+            </Box>
+          </Box>
+        )}
       </Box>
-      <Box sx={{ ...centeredBoxStyleVertical, width: "100%" }}>
+      <Box
+        sx={{
+          ...centeredBoxStyleVertical,
+          width: "100%",
+          maxHeight: "80vh",
+          margin: "1% 0",
+        }}
+      >
         {accountBookEntries.length > 0 ? (
           <AccountBookTable
             accountBookEntries={accountBookEntries}
