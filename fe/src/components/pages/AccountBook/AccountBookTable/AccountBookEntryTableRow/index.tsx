@@ -217,9 +217,9 @@ const AccountBookEntryTableRow = ({
     }
   }, [accountBookEntryId, input, reload, year, month, date]);
 
-  const updateAccountBookEntryByEnterKeyDown = useCallback(
-    enterKeyDown(updateAccountBookEntry),
-    [updateAccountBookEntry]
+  const updateOrInsertAccountBookEntryByEnterKeyDown = useCallback(
+    enterKeyDown(updateAccountBookEntry, insertAccountBookEntry),
+    [updateAccountBookEntry, insertAccountBookEntry]
   );
 
   return (
@@ -287,7 +287,7 @@ const AccountBookEntryTableRow = ({
           value={input.title}
           onChange={selectTitle}
           onBlur={updateAccountBookEntry}
-          onKeyDown={updateAccountBookEntryByEnterKeyDown}
+          onKeyDown={updateOrInsertAccountBookEntryByEnterKeyDown}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -311,7 +311,7 @@ const AccountBookEntryTableRow = ({
           value={input.description}
           onChange={selectDescription}
           onBlur={updateAccountBookEntry}
-          onKeyDown={updateAccountBookEntryByEnterKeyDown}
+          onKeyDown={updateOrInsertAccountBookEntryByEnterKeyDown}
           renderInput={(params) => (
             <TextField
               {...params}

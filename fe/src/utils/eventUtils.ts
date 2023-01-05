@@ -1,8 +1,13 @@
 import { KeyboardEvent } from "react";
 
-export const enterKeyDown = (handler: () => void) => (e: KeyboardEvent) => {
-  const { key } = e;
-  if (key.endsWith("Enter")) {
-    handler();
-  }
-};
+export const enterKeyDown =
+  (handler: () => void, shiftedHandler?: () => void) =>
+  ({ key, shiftKey }: KeyboardEvent) => {
+    if (key.endsWith("Enter")) {
+      if (shiftKey && shiftedHandler) {
+        shiftedHandler();
+      } else {
+        handler();
+      }
+    }
+  };
