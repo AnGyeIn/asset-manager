@@ -57,7 +57,7 @@ const AccountBook = () => {
     [yearsMonths]
   );
 
-  const { totIncome, totExpenditure, netIncome, currValance } = useMemo(() => {
+  const { totIncome, totExpenditure, netIncome, currBalance } = useMemo(() => {
     let _totIncome = 0;
     let _totExpenditure = 0;
     accountBookEntries.forEach(({ amount }, index) => {
@@ -79,9 +79,9 @@ const AccountBook = () => {
       totIncome: _totIncome,
       totExpenditure: _totExpenditure,
       netIncome: _totIncome + _totExpenditure,
-      currValance: accountBookEntries
+      currBalance: accountBookEntries
         .slice(0, currIdx + 1)
-        .reduce((valance, { amount }) => valance + amount, 0),
+        .reduce((balance, { amount }) => balance + amount, 0),
     };
   }, [accountBookEntries]);
 
@@ -280,7 +280,7 @@ const AccountBook = () => {
               </Typography>
             </Box>
             <Box sx={infoTextBoxStyle}>
-              현재 잔고 : {getCurrencyStringFrom(currValance)}
+              현재 잔고 : {getCurrencyStringFrom(currBalance)}
             </Box>
           </Box>
         )}
