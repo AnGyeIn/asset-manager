@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = SwaggerTag.REPEATED_ACCOUNT_BOOK_ENTRY, description = "repeated account book entry")
 @RestController
 @RequiredArgsConstructor
-public class RepeatedAccountBookController {
+public class RepeatedAccountBookEntryController {
 
   private final RepeatedAccountBookEntryService repeatedAccountBookEntryService;
 
