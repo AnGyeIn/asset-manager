@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.agistudio.assetmanager.constant.PathPattern;
 import com.agistudio.assetmanager.constant.SwaggerTag;
 import com.agistudio.assetmanager.model.entity.AccountBookEntry;
+import com.agistudio.assetmanager.model.entity.RepeatedAccountBookEntry;
 import com.agistudio.assetmanager.model.request.CreateAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.SaveAccountBookEntryReq;
+import com.agistudio.assetmanager.model.request.SaveRepeatedAccountBookEntryReq;
 import com.agistudio.assetmanager.model.request.YearAndMonthQuery;
 import com.agistudio.assetmanager.model.response.TitlesAndDescriptions;
 import com.agistudio.assetmanager.service.AccountBookService;
@@ -84,5 +86,37 @@ public class AccountBookController {
   public void deleteAccountBookEntry(@PathVariable Integer accountBookEntryId) {
     log.info("delete account book entry - accountBookEntryId: {}", accountBookEntryId);
     accountBookService.deleteAccountBookEntry(accountBookEntryId);
+  }
+
+  @Operation(summary = "get list of repeated account book entries", tags = SwaggerTag.ACCOUNT_BOOK)
+  @GetMapping(path = PathPattern.REPEATED_ACCOUNT_BOOK_ENTRIES)
+  public List<RepeatedAccountBookEntry> getRepeatedAccountBookEntries() {
+    log.info("getRepeatedAccountBookEntries");
+    return accountBookService.getRepeatedAccountBookEntries();
+  }
+
+  @Operation(summary = "create repeated account book entry", tags = SwaggerTag.ACCOUNT_BOOK)
+  @PostMapping(path = PathPattern.REPEATED_ACCOUNT_BOOK_ENTRY_UNKNOWN)
+  public Integer createRepeatedAccountBookEntry(
+      @RequestBody @Valid SaveRepeatedAccountBookEntryReq saveRepeatedAccountBookEntryReq) {
+    log.info("createRepeatedAccountBookEntry: {}", saveRepeatedAccountBookEntryReq);
+    return accountBookService.createRepeatedAccountBookEntry(saveRepeatedAccountBookEntryReq);
+  }
+
+  @Operation(summary = "update repeated account book entry", tags = SwaggerTag.ACCOUNT_BOOK)
+  @PatchMapping(path = PathPattern.REPEATED_ACCOUNT_BOOK_ENTRY)
+  public void updateRepeatedAccountBookEntry(@PathVariable Integer repeatedAccountBookEntryId,
+      @RequestBody @Valid SaveRepeatedAccountBookEntryReq saveRepeatedAccountBookEntryReq) {
+    log.info("updateRepeatedAccountBookEntry - repeatedAccountBookEntryId: {} / saveRepeatedAccountBookEntryReq: {}",
+        repeatedAccountBookEntryId, saveRepeatedAccountBookEntryReq);
+    accountBookService.updateRepeatedAccountBookEntry(repeatedAccountBookEntryId,
+        saveRepeatedAccountBookEntryReq);
+  }
+
+  @Operation(summary = "delete repeated account book entry", tags = SwaggerTag.ACCOUNT_BOOK)
+  @DeleteMapping(path = PathPattern.REPEATED_ACCOUNT_BOOK_ENTRY)
+  public void deleteRepeatedAccountBookEntry(@PathVariable Integer repeatedAccountBookEntryId) {
+    log.info("deleteRepeatedAccountBookEntry - repeatedAccountBookEntryId: {}", repeatedAccountBookEntryId);
+    accountBookService.deleteRepeatedAccountBookEntry(repeatedAccountBookEntryId);
   }
 }
