@@ -2,21 +2,28 @@ import axios, { AxiosResponse, isAxiosError } from "axios";
 import {
   AccountBookEntry,
   AccountBookEntryUpdate,
+  RepeatedAccountBookEntry,
+  RepeatedAccountBookEntryUpdate,
   TitlesDescriptions,
 } from "../models/accountBook";
 import { YearMonth, YearMonthDate, YearsMonths } from "../models/calendar";
 import {
-  RepeatedAccountBookEntry,
-  RepeatedAccountBookEntryUpdate,
-} from "../models/repeatedAccountBookEntry";
+  Preservation,
+  PreservationCreate,
+  PreservationUpdate,
+  StocksAccount,
+  StocksAccountUpdate,
+  StocksCreate,
+  StocksUpdate,
+} from "../models/stocks";
 
 const serverUrl = `${process.env.REACT_APP_SERVER_URL}/v0`;
 const getUrl = (path: string) => `${serverUrl}${path}`;
 
-interface Request {
+type Request = {
   path: string;
   data?: any;
-}
+};
 
 const GET = async ({ path, data }: Request) =>
   axios.get(getUrl(path), {
@@ -81,6 +88,16 @@ const api = {
       const response = await checkResponse(GET, { path });
       return response?.data ?? [];
     },
+    preservations: async (): Promise<Preservation[]> => {
+      const path = "/preservations";
+      const response = await checkResponse(GET, { path });
+      return response?.data ?? [];
+    },
+    stocksAccounts: async (): Promise<StocksAccount[]> => {
+      const path = "/stocksAccounts";
+      const response = await checkResponse(GET, { path });
+      return response?.data ?? [];
+    },
   },
 
   post: {
@@ -103,6 +120,32 @@ const api = {
         data: repeatedAccountBookEntry,
       });
       return Number(response?.data);
+    },
+    preservation: async (preservation: PreservationCreate): Promise<number> => {
+      const path = "/preservation";
+      const response = await checkResponse(POST, {
+        path,
+        data: preservation,
+      });
+      return Number(response?.data);
+    },
+    stocksAccount: async (
+      stocksAccount: StocksAccountUpdate
+    ): Promise<number> => {
+      const path = "/stocksAccount";
+      const response = await checkResponse(POST, {
+        path,
+        data: stocksAccount,
+      });
+      return Number(response?.data);
+    },
+    stocks: async (stocks: StocksCreate): Promise<string> => {
+      const path = "/stocks";
+      const response = await checkResponse(POST, {
+        path,
+        data: stocks,
+      });
+      return response?.data ?? "";
     },
   },
 
@@ -129,6 +172,36 @@ const api = {
       });
       return response?.status === 200;
     },
+    preservation: async (
+      preservationId: number,
+      preservation: PreservationUpdate
+    ) => {
+      const path = `/preservations/${preservationId}`;
+      const response = await checkResponse(PATCH, {
+        path,
+        data: preservation,
+      });
+      return response?.status === 200;
+    },
+    stocksAccount: async (
+      stocksAccountId: number,
+      stocksAccount: StocksAccountUpdate
+    ) => {
+      const path = `/stocksAccounts/${stocksAccountId}`;
+      const response = await checkResponse(PATCH, {
+        path,
+        data: stocksAccount,
+      });
+      return response?.status === 200;
+    },
+    stocks: async (code: string, stocks: StocksUpdate) => {
+      const path = `/stocks/${code}`;
+      const response = await checkResponse(POST, {
+        path,
+        data: stocks,
+      });
+      return response?.status === 200;
+    },
   },
 
   delete: {
@@ -139,6 +212,21 @@ const api = {
     },
     repeatedAccountBookEntry: async (repeatedAccountBookEntryId: number) => {
       const path = `/repeatedAccountBookEntries/${repeatedAccountBookEntryId}`;
+      const response = await checkResponse(DELETE, { path });
+      return response?.status === 200;
+    },
+    preservation: async (preservationId: number) => {
+      const path = `/preservations/${preservationId}`;
+      const response = await checkResponse(DELETE, { path });
+      return response?.status === 200;
+    },
+    stocksAccount: async (stocksAccountId: number) => {
+      const path = `/stocksAccounts/${stocksAccountId}`;
+      const response = await checkResponse(DELETE, { path });
+      return response?.status === 200;
+    },
+    stocks: async (code: string) => {
+      const path = `/stocks/${code}`;
       const response = await checkResponse(DELETE, { path });
       return response?.status === 200;
     },

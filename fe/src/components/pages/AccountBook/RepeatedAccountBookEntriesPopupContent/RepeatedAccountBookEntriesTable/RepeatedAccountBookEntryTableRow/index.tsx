@@ -20,7 +20,7 @@ import { DayOfWeek, daysOfWeek } from "../../../../../../models/calendar";
 import {
   RepeatedAccountBookEntry,
   RepeatedAccountBookEntryUpdate,
-} from "../../../../../../models/repeatedAccountBookEntry";
+} from "../../../../../../models/accountBook";
 import { RootState } from "../../../../../../models/store";
 import { centeredBoxStyleHorizontal } from "../../../../../../styles/boxStyles";
 import { enterKeyDown } from "../../../../../../utils/eventUtils";
@@ -30,7 +30,10 @@ import {
   getInputFieldSetterWithEvent,
   isInputChanged,
 } from "../../../../../../utils/inputUtils";
-import { getCurrencyStringFrom, getNormalizedString } from "../../../../../../utils/stringUtils";
+import {
+  getCurrencyStringFrom,
+  getNormalizedString,
+} from "../../../../../../utils/stringUtils";
 import { toastError, toastInfo } from "../../../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../../CircularProgresses/CenteredCircularProgress";
