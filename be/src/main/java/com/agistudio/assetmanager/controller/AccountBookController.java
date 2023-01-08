@@ -84,7 +84,7 @@ public class AccountBookController {
   @Operation(summary = "delete account book entry", tags = SwaggerTag.ACCOUNT_BOOK)
   @DeleteMapping(path = PathPattern.ACCOUNT_BOOK_ENTRY)
   public void deleteAccountBookEntry(@PathVariable Integer accountBookEntryId) {
-    log.info("delete account book entry - accountBookEntryId: {}", accountBookEntryId);
+    log.info("deleteAccountBookEntry - accountBookEntryId: {}", accountBookEntryId);
     accountBookService.deleteAccountBookEntry(accountBookEntryId);
   }
 

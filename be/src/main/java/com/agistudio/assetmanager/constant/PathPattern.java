@@ -19,4 +19,16 @@ public class PathPattern {
   public static final String REPEATED_ACCOUNT_BOOK_ENTRIES = BASE + "/repeatedAccountBookEntries";
   public static final String REPEATED_ACCOUNT_BOOK_ENTRY = REPEATED_ACCOUNT_BOOK_ENTRIES
       + "/{repeatedAccountBookEntryId}";
+
+  public static final String PRESERVATION_UNKNOWN = BASE + "/preservation";
+  public static final String PRESERVATIONS = PRESERVATION_UNKNOWN + "s";
+  public static final String PRESERVATION = PRESERVATIONS + "/{preservationId}";
+
+  public static final String STOCKS_UNKNOWN = BASE + "/stocks";
+  public static final String STOCKS = STOCKS_UNKNOWN + "/{code}";
+
+  public static final String STOCKS_ACCOUNT_UNKNOWN = STOCKS_UNKNOWN + "Account";
+  public static final String STOCKS_ACCOUNTS = STOCKS_ACCOUNT_UNKNOWN + "s";
+  public static final String STOCKS_ACCOUNT = STOCKS_ACCOUNTS + "/{stocksAccountId}";
+
 }

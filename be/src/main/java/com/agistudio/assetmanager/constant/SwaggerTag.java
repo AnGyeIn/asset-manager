@@ -6,4 +6,6 @@ import lombok.experimental.UtilityClass;
 public class SwaggerTag {
 
   public static final String ACCOUNT_BOOK = "Account Book";
+
+  public static final String STOCKS = "Stocks";
 }
