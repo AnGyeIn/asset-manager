@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TitlesDescriptions } from "../../models/accountBook";
+import { TitlesDescriptions } from "../../models/store";
 
 const initialState: TitlesDescriptions = {
   titles: [],

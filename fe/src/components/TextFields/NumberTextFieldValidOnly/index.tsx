@@ -16,8 +16,9 @@ type Props = {
   sx?: SxProps;
   disabled?: boolean;
   error?: boolean;
+  isInteger?: boolean;
 };
-const IntegerTextFieldValidOnly = ({
+const NumberTextFieldValidOnly = ({
   value,
   setValue,
   label,
@@ -30,6 +31,7 @@ const IntegerTextFieldValidOnly = ({
   sx,
   disabled = false,
   error = false,
+  isInteger = true,
 }: Props) => {
   const valueStr = useMemo(
     () =>
@@ -43,8 +45,11 @@ const IntegerTextFieldValidOnly = ({
 
   const onChange = useCallback(
     ({ target: { value: newValueStr } }: ChangeEvent<HTMLInputElement>) => {
-      let newValue = Math.floor(Number(newValueStr.replaceAll(",", "")));
+      let newValue = Number(newValueStr.replaceAll(",", ""));
       if (isValidNumber(newValue)) {
+        if (isInteger) {
+          newValue = Math.floor(newValue);
+        }
         if (isValidNumber(min)) {
           newValue = Math.max(newValue, min!);
         }
@@ -54,7 +59,7 @@ const IntegerTextFieldValidOnly = ({
         setValue(newValue);
       }
     },
-    [setValue, min, max]
+    [setValue, isInteger, min, max]
   );
 
   const onCompletedByEnterKeyDown = useCallback(
@@ -80,4 +85,4 @@ const IntegerTextFieldValidOnly = ({
   );
 };
 
-export default memo(IntegerTextFieldValidOnly);
+export default memo(NumberTextFieldValidOnly);

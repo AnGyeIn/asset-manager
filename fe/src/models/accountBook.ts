@@ -29,8 +29,3 @@ export type RepeatedAccountBookEntryUpdate = FieldRemoved<
   RepeatedAccountBookEntry,
   "repeatedAccountBookEntryId"
 >;
-
-export type TitlesDescriptions = {
-  titles: string[];
-  descriptions: string[];
-};

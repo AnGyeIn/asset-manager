@@ -17,7 +17,7 @@ export const isInputChanged = <I extends Input>(
   });
 
 export const getInputFieldSetter =
-  <I extends Input, V = I[keyof I]>(
+  <I extends object, V = I[keyof I]>(
     setInput: Dispatch<SetStateAction<I>>,
     fieldName: keyof I,
     getAdditional = (newValue?: V | null) => ({})

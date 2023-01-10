@@ -37,7 +37,8 @@ import {
 import { toastError, toastInfo } from "../../../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../../CircularProgresses/CenteredCircularProgress";
-import IntegerTextFieldValidOnly from "../../../../../TextFields/IntegerTextFieldValidOnly";
+import NumberTextFieldValidOnly from "../../../../../TextFields/NumberTextFieldValidOnly";
+import { getColoredNumberStyle } from "../../../../../../utils/styleUtils";
 
 type Props = {
   repeatedAccountBookEntry: RepeatedAccountBookEntry;
@@ -247,7 +248,7 @@ const RepeatedAccountBookEntryTableRow = ({
       </TableCell>
       <TableCell>
         <Box sx={centeredBoxStyleHorizontal}>
-          <IntegerTextFieldValidOnly
+          <NumberTextFieldValidOnly
             value={input.date ?? NaN}
             setValue={setDate}
             min={1}
@@ -285,17 +286,20 @@ const RepeatedAccountBookEntryTableRow = ({
         </Box>
       </TableCell>
       <TableCell>
-        <IntegerTextFieldValidOnly
+        <NumberTextFieldValidOnly
           fullWidth
           value={input.amount}
           setValue={setAmount}
           onCompleted={saveRepeatedAccountBookEntry}
           formatter={getCurrencyStringFrom}
-          sx={{
-            height: "1rem",
-            color: input.amount < 0 ? "blue" : "red",
-            textAlign: "right",
-          }}
+          sx={useMemo(
+            () => ({
+              ...getColoredNumberStyle(input.amount),
+              height: "1rem",
+              textAlign: "right",
+            }),
+            [input.amount]
+          )}
         />
       </TableCell>
       <TableCell>

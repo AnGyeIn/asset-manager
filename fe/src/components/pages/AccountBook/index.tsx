@@ -14,7 +14,7 @@ import { AccountBookEntry } from "../../../models/accountBook";
 import { YearMonth, YearsMonths } from "../../../models/calendar";
 import { Canceler } from "../../../models/control";
 import { RootState } from "../../../models/store";
-import { setCurrBalance } from "../../../store/slices/currBalanceSlice";
+import { setCurrBalance } from "../../../store/slices/balanceSlice";
 import { setTitlesDescriptions } from "../../../store/slices/titlesDescriptionsSlice";
 import {
   centeredBoxStyleHorizontal,
@@ -37,7 +37,9 @@ import { infoTextBoxStyle } from "./styles";
 const AccountBook = () => {
   const dispatch = useDispatch();
 
-  const currBalance = useSelector((state: RootState) => state.currBalance);
+  const currBalance = useSelector(
+    (state: RootState) => state.balance.currBalance
+  );
 
   const [yearsMonths, setYearsMonths] = useState<YearsMonths>({});
   const [selectedYearMonth, setSelectedYearMonth] = useState<YearMonth>({

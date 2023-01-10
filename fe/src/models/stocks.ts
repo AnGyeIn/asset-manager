@@ -33,6 +33,7 @@ export type Stocks = FieldRemoved<StocksCreate, "stocksAccountId"> &
 export type StocksAccount = {
   stocksAccountId: number;
   name?: string;
+  cash: number;
   targetWeight: number;
   stocksList: Stocks[];
 };

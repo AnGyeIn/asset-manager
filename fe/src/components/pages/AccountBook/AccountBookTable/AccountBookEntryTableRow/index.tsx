@@ -37,7 +37,7 @@ import {
 import { toastError, toastInfo } from "../../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCircularProgress";
-import IntegerTextFieldValidOnly from "../../../../TextFields/IntegerTextFieldValidOnly";
+import NumberTextFieldValidOnly from "../../../../TextFields/NumberTextFieldValidOnly";
 
 type Props = {
   isFirst?: boolean;
@@ -243,7 +243,7 @@ const AccountBookEntryTableRow = ({
         )}
       </TableCell>
       <TableCell sx={{ textAlign: "center" }}>
-        <IntegerTextFieldValidOnly
+        <NumberTextFieldValidOnly
           fullWidth
           value={input.date}
           setValue={setDate}
@@ -255,7 +255,7 @@ const AccountBookEntryTableRow = ({
         />
       </TableCell>
       <TableCell sx={{ color: "red", textAlign: "right" }}>
-        <IntegerTextFieldValidOnly
+        <NumberTextFieldValidOnly
           fullWidth
           value={amountPositive}
           setValue={setAmountPositive}
@@ -266,7 +266,7 @@ const AccountBookEntryTableRow = ({
         />
       </TableCell>
       <TableCell sx={{ color: "blue", textAlign: "right" }}>
-        <IntegerTextFieldValidOnly
+        <NumberTextFieldValidOnly
           fullWidth
           value={amountNegative}
           setValue={setAmountNegative}
