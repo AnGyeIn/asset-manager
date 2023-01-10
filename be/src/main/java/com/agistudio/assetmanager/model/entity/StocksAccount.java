@@ -42,6 +42,10 @@ public class StocksAccount implements Serializable {
 
   @NotNull
   @Positive
+  private Integer cash;
+
+  @NotNull
+  @Positive
   @Max(100)
   private Double targetWeight;
 
@@ -54,6 +58,7 @@ public class StocksAccount implements Serializable {
     if (name != null) {
       this.name = name;
     }
+    cash = saveStocksAccountReq.getCash();
     targetWeight = saveStocksAccountReq.getTargetWeight();
   }
 }

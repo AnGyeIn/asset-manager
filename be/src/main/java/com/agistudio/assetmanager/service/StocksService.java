@@ -66,6 +66,7 @@ public class StocksService {
     log.info("createStocksAccount");
     return stocksAccountRepository.save(StocksAccount.builder()
         .name(saveStocksAccountReq.getName())
+        .cash(0)
         .targetWeight(saveStocksAccountReq.getTargetWeight())
         .build()).getStocksAccountId();
   }
