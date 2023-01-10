@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { memo } from "react";
-import { RepeatedAccountBookEntry } from "../../../../../models/repeatedAccountBookEntry";
+import { RepeatedAccountBookEntry } from "../../../../../models/accountBook";
 import TableHeaderCell from "../../../../TableCells/TableHeaderCell";
 import RepeatedAccountBookEntryTableRow from "./RepeatedAccountBookEntryTableRow";
 

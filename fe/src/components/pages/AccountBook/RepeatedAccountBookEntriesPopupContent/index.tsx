@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import api from "../../../../api";
-import { RepeatedAccountBookEntry } from "../../../../models/repeatedAccountBookEntry";
+import { RepeatedAccountBookEntry } from "../../../../models/accountBook";
 import { setTitlesDescriptions } from "../../../../store/slices/titlesDescriptionsSlice";
 import { centeredBoxStyleVertical } from "../../../../styles/boxStyles";
 import { isValidNumber } from "../../../../utils/validationUtils";
@@ -76,7 +76,7 @@ const RepeatedAccountBookEntriesPopupContent = ({ close }: Props) => {
     return () => {
       canceler.cancel = true;
     };
-  }, [reloader]);
+  }, [reloader, dispatch]);
 
   useEffect(() => {
     setIsLoading(false);

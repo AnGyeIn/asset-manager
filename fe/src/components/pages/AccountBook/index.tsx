@@ -7,12 +7,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Popup from "reactjs-popup";
 import api from "../../../api";
 import { AccountBookEntry } from "../../../models/accountBook";
 import { YearMonth, YearsMonths } from "../../../models/calendar";
 import { Canceler } from "../../../models/control";
+import { RootState } from "../../../models/store";
+import { setCurrBalance } from "../../../store/slices/currBalanceSlice";
 import { setTitlesDescriptions } from "../../../store/slices/titlesDescriptionsSlice";
 import {
   centeredBoxStyleHorizontal,
@@ -34,6 +36,8 @@ import { infoTextBoxStyle } from "./styles";
 
 const AccountBook = () => {
   const dispatch = useDispatch();
+
+  const currBalance = useSelector((state: RootState) => state.currBalance);
 
   const [yearsMonths, setYearsMonths] = useState<YearsMonths>({});
   const [selectedYearMonth, setSelectedYearMonth] = useState<YearMonth>({
@@ -57,7 +61,7 @@ const AccountBook = () => {
     [yearsMonths]
   );
 
-  const { totIncome, totExpenditure, netIncome, currBalance } = useMemo(() => {
+  const { totIncome, totExpenditure, netIncome } = useMemo(() => {
     let _totIncome = 0;
     let _totExpenditure = 0;
     accountBookEntries.forEach(({ amount }, index) => {
@@ -75,15 +79,20 @@ const AccountBook = () => {
       date > today ? -1 : 0
     );
 
+    dispatch(
+      setCurrBalance(
+        accountBookEntries
+          .slice(0, currIdx + 1)
+          .reduce((balance, { amount }) => balance + amount, 0)
+      )
+    );
+
     return {
       totIncome: _totIncome,
       totExpenditure: _totExpenditure,
       netIncome: _totIncome + _totExpenditure,
-      currBalance: accountBookEntries
-        .slice(0, currIdx + 1)
-        .reduce((balance, { amount }) => balance + amount, 0),
     };
-  }, [accountBookEntries]);
+  }, [accountBookEntries, dispatch]);
 
   const reload = useCallback(() => setReloader((_reloader) => !_reloader), []);
 
