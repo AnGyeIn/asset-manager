@@ -4,7 +4,6 @@ import {
   AccountBookEntryUpdate,
   RepeatedAccountBookEntry,
   RepeatedAccountBookEntryUpdate,
-  TitlesDescriptions,
 } from "../models/accountBook";
 import { YearMonth, YearMonthDate, YearsMonths } from "../models/calendar";
 import {
@@ -16,6 +15,7 @@ import {
   StocksCreate,
   StocksUpdate,
 } from "../models/stocks";
+import { TitlesDescriptions } from "../models/store";
 
 const serverUrl = `${process.env.REACT_APP_SERVER_URL}/v0`;
 const getUrl = (path: string) => `${serverUrl}${path}`;

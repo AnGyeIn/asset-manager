@@ -37,9 +37,7 @@ import { infoTextBoxStyle } from "./styles";
 const AccountBook = () => {
   const dispatch = useDispatch();
 
-  const currBalance = useSelector(
-    (state: RootState) => state.balance.currBalance
-  );
+  const { currBalance } = useSelector((_state: RootState) => _state.balance);
 
   const [yearsMonths, setYearsMonths] = useState<YearsMonths>({});
   const [selectedYearMonth, setSelectedYearMonth] = useState<YearMonth>({
@@ -112,7 +110,9 @@ const AccountBook = () => {
     getInputFieldSetterWithEvent<YearMonth, number, SyntheticEvent>(
       setSelectedYearMonth,
       "year",
-      (newYear) => (isValidNumber(newYear) ? yearsMonths[newYear!][0] : NaN)
+      (newYear) => ({
+        month: isValidNumber(newYear) ? yearsMonths[newYear!][0] : NaN,
+      })
     ),
     [yearsMonths]
   );
@@ -159,7 +159,7 @@ const AccountBook = () => {
         )}.`
       );
     }
-  }, [years, fetchYearsMonths]);
+  }, [years, yearsMonths, fetchYearsMonths]);
 
   useEffect(() => {
     const canceler = { cancel: false };
@@ -183,7 +183,7 @@ const AccountBook = () => {
         month: NaN,
       });
     }
-  }, [years]);
+  }, [years, yearsMonths]);
 
   useEffect(() => {
     const canceler = { cancel: false };
@@ -217,7 +217,7 @@ const AccountBook = () => {
     return () => {
       canceler.cancel = true;
     };
-  }, [reloader]);
+  }, [reloader, dispatch]);
 
   return (
     <>

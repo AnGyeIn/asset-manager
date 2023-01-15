@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -41,11 +41,11 @@ public class StocksAccount implements Serializable {
   private String name;
 
   @NotNull
-  @Positive
+  @Min(0)
   private Integer cash;
 
   @NotNull
-  @Positive
+  @Min(0)
   @Max(100)
   private Double targetWeight;
 

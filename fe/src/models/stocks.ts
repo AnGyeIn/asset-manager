@@ -42,3 +42,10 @@ export type StocksAccountUpdate = FieldRemoved<
   StocksAccount,
   "stocksAccountId" | "stocksList"
 >;
+
+export type StocksLiveInfo = {
+  name: string;
+  price: number;
+  floatingValue: number;
+  value: number;
+};

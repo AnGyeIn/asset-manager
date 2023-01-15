@@ -6,9 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -49,19 +49,19 @@ public class Stocks implements Serializable {
   @NotNull
   private StocksType stocksType;
 
-  @Positive
+  @Min(0)
   @Builder.Default
   private Double floatingStocksNum = 0.0;
 
-  @Positive
+  @Min(0)
   @Builder.Default
   private Integer floatingCostPerStocks = 0;
 
-  @Positive
+  @Min(0)
   @Builder.Default
   private Integer stocksNum = 0;
 
-  @Positive
+  @Min(0)
   @Builder.Default
   private Integer cost = 0;
 

@@ -51,15 +51,17 @@ const StocksWeightManagingTableRow = ({
     targetWeight,
   });
 
-  const { currWeight, adjustment, transferNeeded } = useMemo(() => {
-    const _currWeight = (stocksAccountTotalValue / totalValue) * 100;
-    const _adjustment = totalValue * ((targetWeight - _currWeight) / 100);
-    return {
-      currWeight: _currWeight,
-      adjustment: _adjustment,
-      transferNeeded: _adjustment - cash,
-    };
-  }, [stocksAccountTotalValue, totalValue, targetWeight, cash]);
+  const currWeight = useMemo(
+    () => (stocksAccountTotalValue / totalValue) * 100,
+    [stocksAccountTotalValue, totalValue]
+  );
+
+  const adjustment = useMemo(
+    () => totalValue * ((targetWeight - currWeight) / 100),
+    [totalValue, targetWeight, currWeight]
+  );
+
+  const transferNeeded = useMemo(() => adjustment - cash, [adjustment, cash]);
 
   const updateStocksAccount = useCallback(async () => {
     if (!isInputChanged(input, inputStore)) {
@@ -113,6 +115,7 @@ const StocksWeightManagingTableRow = ({
             labelKey={"name"}
             fullWidth
             onCompleted={updateStocksAccount}
+            sx={{ height: "1rem" }}
           />
         </Box>
       </TableCell>
@@ -125,16 +128,20 @@ const StocksWeightManagingTableRow = ({
       <TableCell sx={{ textAlign: "right" }}>
         {`${useMemo(() => currWeight.toFixed(2), [currWeight])}%`}
       </TableCell>
-      <TableCell sx={centeredBoxStyleHorizontal}>
-        <NumberTextFieldValidOnly
-          value={input.targetWeight}
-          setValue={setTargetWeight}
-          min={0}
-          max={100}
-          onCompleted={updateStocksAccount}
-          sx={{ width: "3rem", height: "1rem", textAlign: "right" }}
-        />
-        <Typography sx={{ margin: "0 1%" }}>%</Typography>
+      <TableCell>
+        <Box sx={centeredBoxStyleHorizontal}>
+          <NumberTextFieldValidOnly
+            value={input.targetWeight}
+            setValue={setTargetWeight}
+            min={0}
+            max={100}
+            formatter={useCallback((value: number) => value.toFixed(2), [])}
+            onCompleted={updateStocksAccount}
+            sx={{ width: "3rem", height: "1rem", textAlign: "right" }}
+            isInteger={false}
+          />
+          <Typography sx={{ margin: "0 1%" }}>%</Typography>
+        </Box>
       </TableCell>
       <TableCell
         sx={useMemo(
@@ -145,7 +152,10 @@ const StocksWeightManagingTableRow = ({
           [adjustment]
         )}
       >
-        {useMemo(() => getCurrencyStringFrom(adjustment), [adjustment])}
+        {useMemo(
+          () => getCurrencyStringFrom(Math.round(adjustment)),
+          [adjustment]
+        )}
       </TableCell>
       <TableCell
         sx={useMemo(
@@ -156,7 +166,10 @@ const StocksWeightManagingTableRow = ({
           [transferNeeded]
         )}
       >
-        {useMemo(() => getCurrencyStringFrom(transferNeeded), [transferNeeded])}
+        {useMemo(
+          () => getCurrencyStringFrom(Math.round(transferNeeded)),
+          [transferNeeded]
+        )}
       </TableCell>
     </TableRow>
   );
