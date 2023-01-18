@@ -1,3 +1,4 @@
+import { AddCircleOutline } from "@mui/icons-material";
 import {
   Table,
   TableBody,
@@ -5,10 +6,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { memo, useMemo } from "react";
+import { Dispatch, memo, SetStateAction, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { StocksAccount } from "../../../../models/stocks";
 import { RootState } from "../../../../models/store";
+import { isValidNumber } from "../../../../utils/validationUtils";
 import TableHeaderCell from "../../../TableCells/TableHeaderCell";
 import CashWeightManagingTableRow from "./CashWeightManagingTableRow";
 import StocksWeightManagingTableRow from "./StocksWeightManagingTableRow";
@@ -16,11 +18,13 @@ import TotalValueTableRow from "./TotalValueTableRow";
 
 type Props = {
   stocksAccounts: StocksAccount[];
+  setStocksAccounts: Dispatch<SetStateAction<StocksAccount[]>>;
   stocksAccountsTotalValues: number[];
   reload: () => void;
 };
 const StocksWeightManagingTable = ({
   stocksAccounts,
+  setStocksAccounts,
   stocksAccountsTotalValues,
   reload,
 }: Props) => {
@@ -58,12 +62,44 @@ const StocksWeightManagingTable = ({
     [stocksAccounts]
   );
 
+  const isTemplateAdded = useMemo(() => {
+    const length = stocksAccounts.length;
+    return (
+      length > 0 && !isValidNumber(stocksAccounts[length - 1].stocksAccountId)
+    );
+  }, [stocksAccounts]);
+
+  const addNewStocksAccountTemplate = useCallback(
+    () =>
+      setStocksAccounts((prevStocksAccounts) => [
+        ...prevStocksAccounts,
+        {
+          stocksAccountId: NaN,
+          name: "",
+          cash: 0,
+          targetWeight: 0,
+          stocksList: [],
+        },
+      ]),
+    [setStocksAccounts]
+  );
+
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            <TableHeaderCell sx={{ width: "2rem" }} />
+            <TableHeaderCell sx={{ width: "2rem" }}>
+              <AddCircleOutline
+                onClick={
+                  isTemplateAdded ? undefined : addNewStocksAccountTemplate
+                }
+                color={useMemo(
+                  () => (isTemplateAdded ? "disabled" : "success"),
+                  [isTemplateAdded]
+                )}
+              />
+            </TableHeaderCell>
             <TableHeaderCell>계좌명</TableHeaderCell>
             <TableHeaderCell sx={{ width: "8rem" }}>현재 금액</TableHeaderCell>
             <TableHeaderCell sx={{ width: "5rem" }}>현재 비중</TableHeaderCell>

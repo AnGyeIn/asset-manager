@@ -103,6 +103,7 @@ const Stocks = () => {
       {stocksAccountsTotalValues.length > 0 ? (
         <StocksWeightManagingTable
           stocksAccounts={stocksAccounts}
+          setStocksAccounts={setStocksAccounts}
           stocksAccountsTotalValues={stocksAccountsTotalValues}
           reload={fetchStocksAccounts}
         />
