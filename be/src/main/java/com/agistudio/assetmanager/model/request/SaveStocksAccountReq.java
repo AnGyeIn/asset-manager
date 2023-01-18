@@ -2,7 +2,6 @@ package com.agistudio.assetmanager.model.request;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -21,12 +20,10 @@ public class SaveStocksAccountReq {
   private String name;
 
   @Schema(description = "cash.")
-  @NotNull
   @Min(0)
   private Integer cash;
 
   @Schema(description = "target weight in percent.")
-  @NotNull
   @Min(0)
   @Max(100)
   private Double targetWeight;
