@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -35,7 +35,7 @@ public class Preservation implements Serializable {
   private Integer preservationId;
 
   @NotNull
-  @Positive
+  @Min(0)
   private Integer amount;
 
   private String description;
@@ -45,11 +45,17 @@ public class Preservation implements Serializable {
   private Boolean active = true;
 
   public void update(SavePreservationReq savePreservationReq) {
-    amount = savePreservationReq.getAmount();
+    Integer amount = savePreservationReq.getAmount();
     String description = savePreservationReq.getDescription();
+    Boolean active = savePreservationReq.getActive();
+    if (amount != null) {
+      this.amount = amount;
+    }
     if (description != null) {
       this.description = description;
     }
-    active = savePreservationReq.getActive();
+    if (active != null) {
+      this.active = active;
+    }
   }
 }

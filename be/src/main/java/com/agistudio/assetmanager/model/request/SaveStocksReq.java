@@ -1,7 +1,5 @@
 package com.agistudio.assetmanager.model.request;
 
-import javax.validation.constraints.NotNull;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +26,5 @@ public class SaveStocksReq {
   private Integer cost;
 
   @Schema(description = "is being managed flag.")
-  @NotNull
   private Boolean isBeingManaged;
 }

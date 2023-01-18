@@ -74,6 +74,7 @@ public class Stocks implements Serializable {
     Integer floatingCostPerStocks = saveStocksReq.getFloatingCostPerStocks();
     Integer stocksNum = saveStocksReq.getStocksNum();
     Integer cost = saveStocksReq.getCost();
+    Boolean isBeingManaged = saveStocksReq.getIsBeingManaged();
     if (floatingStocksNum != null) {
       this.floatingStocksNum = floatingStocksNum;
     }
@@ -86,6 +87,8 @@ public class Stocks implements Serializable {
     if (cost != null) {
       this.cost = cost;
     }
-    isBeingManaged = saveStocksReq.getIsBeingManaged();
+    if (isBeingManaged != null) {
+      this.isBeingManaged = isBeingManaged;
+    }
   }
 }

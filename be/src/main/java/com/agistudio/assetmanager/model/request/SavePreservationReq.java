@@ -1,7 +1,5 @@
 package com.agistudio.assetmanager.model.request;
 
-import javax.validation.constraints.NotNull;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +16,5 @@ import lombok.ToString;
 public class SavePreservationReq extends CreatePreservationReq {
   
   @Schema(description = "active flag.")
-  @NotNull
   private Boolean active;
 }

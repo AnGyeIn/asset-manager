@@ -55,10 +55,16 @@ public class StocksAccount implements Serializable {
 
   public void update(SaveStocksAccountReq saveStocksAccountReq) {
     String name = saveStocksAccountReq.getName();
+    Integer cash = saveStocksAccountReq.getCash();
+    Double targetWeight = saveStocksAccountReq.getTargetWeight();
     if (name != null) {
       this.name = name;
     }
-    cash = saveStocksAccountReq.getCash();
-    targetWeight = saveStocksAccountReq.getTargetWeight();
+    if (cash != null) {
+      this.cash = cash;
+    }
+    if (targetWeight != null) {
+      this.targetWeight = targetWeight;
+    }
   }
 }

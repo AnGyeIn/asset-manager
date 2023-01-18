@@ -1,7 +1,7 @@
 package com.agistudio.assetmanager.model.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class CreatePreservationReq {
 
   @Schema(description = "amount.")
   @NotNull
-  @Positive
+  @Min(0)
   private Integer amount;
 
   @Schema(description = "description.")
