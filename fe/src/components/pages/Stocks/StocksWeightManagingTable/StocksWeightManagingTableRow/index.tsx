@@ -22,7 +22,6 @@ import {
 import { getCurrencyStringFrom } from "../../../../../utils/stringUtils";
 import { getColoredNumberStyle } from "../../../../../utils/styleUtils";
 import { toastError, toastInfo } from "../../../../../utils/toastUtils";
-import { isValidNumber } from "../../../../../utils/validationUtils";
 import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCircularProgress";
 import InputTextField from "../../../../TextFields/InputTextField";
 import NumberTextFieldValidOnly from "../../../../TextFields/NumberTextFieldValidOnly";
@@ -52,11 +51,6 @@ const StocksWeightManagingTableRow = ({
     targetWeight,
   });
 
-  const isNew = useMemo(
-    () => !isValidNumber(stocksAccountId),
-    [stocksAccountId]
-  );
-
   const currWeight = useMemo(
     () => (stocksAccountTotalValue / totalValue) * 100,
     [stocksAccountTotalValue, totalValue]
@@ -84,21 +78,6 @@ const StocksWeightManagingTableRow = ({
     }
   }, [stocksAccountId, input, reload]);
 
-  const createStocksAccount = useCallback(async () => {
-    const newStocksAccountId = await api.post.stocksAccount(input);
-    if (isValidNumber(newStocksAccountId)) {
-      toastInfo("Succeeded to add new stocks account.");
-      reload();
-    } else {
-      toastError("Failed to add new stocks account.");
-    }
-  }, [input, reload]);
-
-  const saveStocksAccount = useCallback(
-    isNew ? createStocksAccount : updateStocksAccount,
-    [isNew, createStocksAccount, updateStocksAccount]
-  );
-
   const deleteStocksAccount = useCallback(async () => {
     setIsLoading(true);
     const succeeded = await api.delete.stocksAccount(stocksAccountId);
@@ -106,6 +85,8 @@ const StocksWeightManagingTableRow = ({
     if (succeeded) {
       toastInfo("Succeeded to delete stocks account.");
       reload();
+    } else {
+      toastError("Failed to delete stocks account.");
     }
   }, [stocksAccountId, reload]);
 
@@ -135,7 +116,7 @@ const StocksWeightManagingTableRow = ({
             setInput={setInput as Dispatch<SetStateAction<any>>}
             labelKey={"name"}
             fullWidth
-            onCompleted={saveStocksAccount}
+            onCompleted={updateStocksAccount}
             sx={{ height: "1rem" }}
           />
         </Box>
@@ -157,7 +138,7 @@ const StocksWeightManagingTableRow = ({
             min={0}
             max={100}
             formatter={useCallback((value: number) => value.toFixed(2), [])}
-            onCompleted={saveStocksAccount}
+            onCompleted={updateStocksAccount}
             sx={{ width: "3rem", height: "1rem", textAlign: "right" }}
             isInteger={false}
           />

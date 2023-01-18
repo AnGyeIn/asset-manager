@@ -50,7 +50,7 @@ export const getInputFieldSetterWithEvent = <
   return (_: E, newValue?: V | null) => setInputField(newValue);
 };
 
-export const getInputFieldSetterFromChangeEvent = <I extends Input>(
+export const getInputFieldSetterFromValueChangeEvent = <I extends Input>(
   setInput: Dispatch<SetStateAction<I>>,
   fieldName: keyof I,
   getAdditional = (newValue?: string | null) => ({})
@@ -62,4 +62,18 @@ export const getInputFieldSetterFromChangeEvent = <I extends Input>(
   );
   return ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
     setInputField(value);
+};
+
+export const getInputFieldSetterFromCheckedChangeEvent = <I extends Input>(
+  setInput: Dispatch<SetStateAction<I>>,
+  fieldName: keyof I,
+  getAdditional = (newChecked?: boolean | null) => ({})
+) => {
+  const setInputField = getInputFieldSetter<I, boolean>(
+    setInput,
+    fieldName,
+    getAdditional
+  );
+  return ({ target: { checked } }: ChangeEvent<HTMLInputElement>) =>
+    setInputField(checked);
 };

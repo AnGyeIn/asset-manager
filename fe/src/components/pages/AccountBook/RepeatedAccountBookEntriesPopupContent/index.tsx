@@ -1,5 +1,5 @@
 import { AddCircleOutline } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import api from "../../../../api";
@@ -89,19 +89,25 @@ const RepeatedAccountBookEntriesPopupContent = ({ close }: Props) => {
           ...centeredBoxStyleVertical,
           width: "90%",
           maxHeight: "90%",
-          background: "white",
+          backgroundColor: "white",
         }}
       >
         <PopupHeader close={close} title={"월별 고정 항목"} />
         <Box sx={{ width: "100%" }}>
-          <Button
-            disabled={isUnableToAddTemplate}
-            onClick={addNewRepeatedAccountBookEntryTemplate}
-          >
-            <AddCircleOutline
-              color={isUnableToAddTemplate ? "disabled" : "success"}
-            />
-          </Button>
+          <AddCircleOutline
+            onClick={useMemo(
+              () =>
+                isUnableToAddTemplate
+                  ? undefined
+                  : addNewRepeatedAccountBookEntryTemplate,
+              [isUnableToAddTemplate, addNewRepeatedAccountBookEntryTemplate]
+            )}
+            color={useMemo(
+              () => (isUnableToAddTemplate ? "disabled" : "success"),
+              [isUnableToAddTemplate]
+            )}
+            sx={{ margin: "1% 1% 0" }}
+          />
         </Box>
         {isLoading ? (
           <CenteredCircularProgress />

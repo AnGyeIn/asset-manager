@@ -26,7 +26,7 @@ import { centeredBoxStyleHorizontal } from "../../../../../../styles/boxStyles";
 import { enterKeyDown } from "../../../../../../utils/eventUtils";
 import {
   getInputFieldSetter,
-  getInputFieldSetterFromChangeEvent,
+  getInputFieldSetterFromValueChangeEvent,
   getInputFieldSetterWithEvent,
   isInputChanged,
 } from "../../../../../../utils/inputUtils";
@@ -160,6 +160,13 @@ const RepeatedAccountBookEntryTableRow = ({
       );
       reload();
     }
+    {
+      toastError(
+        `Failed to unregister repeated account book entry on every ${
+          date ?? dayOfWeek
+        }.`
+      );
+    }
   }, [repeatedAccountBookEntryId, date, dayOfWeek, reload]);
 
   const setDate = useCallback(
@@ -207,7 +214,7 @@ const RepeatedAccountBookEntryTableRow = ({
   );
 
   const typeTitle = useCallback(
-    getInputFieldSetterFromChangeEvent<RepeatedAccountBookEntryUpdate>(
+    getInputFieldSetterFromValueChangeEvent<RepeatedAccountBookEntryUpdate>(
       setInput,
       "title"
     ),
@@ -224,7 +231,7 @@ const RepeatedAccountBookEntryTableRow = ({
   );
 
   const typeDescription = useCallback(
-    getInputFieldSetterFromChangeEvent<RepeatedAccountBookEntryUpdate>(
+    getInputFieldSetterFromValueChangeEvent<RepeatedAccountBookEntryUpdate>(
       setInput,
       "description"
     ),

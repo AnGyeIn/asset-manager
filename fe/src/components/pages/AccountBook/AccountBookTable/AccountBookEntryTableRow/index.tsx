@@ -25,7 +25,7 @@ import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
 import { enterKeyDown } from "../../../../../utils/eventUtils";
 import {
   getInputFieldSetter,
-  getInputFieldSetterFromChangeEvent,
+  getInputFieldSetterFromValueChangeEvent,
   getInputFieldSetterWithEvent,
   isInputChanged,
 } from "../../../../../utils/inputUtils";
@@ -169,7 +169,7 @@ const AccountBookEntryTableRow = ({
   );
 
   const typeTitle = useCallback(
-    getInputFieldSetterFromChangeEvent<AccountBookEntryUpdate>(
+    getInputFieldSetterFromValueChangeEvent<AccountBookEntryUpdate>(
       setInput,
       "title"
     ),
@@ -186,7 +186,7 @@ const AccountBookEntryTableRow = ({
   );
 
   const typeDescription = useCallback(
-    getInputFieldSetterFromChangeEvent<AccountBookEntryUpdate>(
+    getInputFieldSetterFromValueChangeEvent<AccountBookEntryUpdate>(
       setInput,
       "description"
     ),

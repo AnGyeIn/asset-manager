@@ -34,7 +34,7 @@ const CashWeightManagingTableRow = ({
   return (
     <TableRow>
       <TableCell />
-      <TableCell sx={centeredBoxStyleHorizontal}>현금</TableCell>
+      <TableCell>현금</TableCell>
       <TableCell sx={{ textAlign: "right" }}>
         {useMemo(() => getCurrencyStringFrom(totalCash), [totalCash])}
       </TableCell>

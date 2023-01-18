@@ -6,10 +6,12 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { Dispatch, memo, SetStateAction, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
+import api from "../../../../api";
 import { StocksAccount } from "../../../../models/stocks";
 import { RootState } from "../../../../models/store";
+import { toastError, toastInfo } from "../../../../utils/toastUtils";
 import { isValidNumber } from "../../../../utils/validationUtils";
 import TableHeaderCell from "../../../TableCells/TableHeaderCell";
 import CashWeightManagingTableRow from "./CashWeightManagingTableRow";
@@ -18,13 +20,11 @@ import TotalValueTableRow from "./TotalValueTableRow";
 
 type Props = {
   stocksAccounts: StocksAccount[];
-  setStocksAccounts: Dispatch<SetStateAction<StocksAccount[]>>;
   stocksAccountsTotalValues: number[];
   reload: () => void;
 };
 const StocksWeightManagingTable = ({
   stocksAccounts,
-  setStocksAccounts,
   stocksAccountsTotalValues,
   reload,
 }: Props) => {
@@ -62,27 +62,19 @@ const StocksWeightManagingTable = ({
     [stocksAccounts]
   );
 
-  const isTemplateAdded = useMemo(() => {
-    const length = stocksAccounts.length;
-    return (
-      length > 0 && !isValidNumber(stocksAccounts[length - 1].stocksAccountId)
-    );
-  }, [stocksAccounts]);
-
-  const addNewStocksAccountTemplate = useCallback(
-    () =>
-      setStocksAccounts((prevStocksAccounts) => [
-        ...prevStocksAccounts,
-        {
-          stocksAccountId: NaN,
-          name: "",
-          cash: 0,
-          targetWeight: 0,
-          stocksList: [],
-        },
-      ]),
-    [setStocksAccounts]
-  );
+  const addStocksAccount = useCallback(async () => {
+    const newStocksAccountId = await api.post.stocksAccount({
+      name: "",
+      cash: 0,
+      targetWeight: 0,
+    });
+    if (isValidNumber(newStocksAccountId)) {
+      toastInfo("Succeeded to add new stocks account.");
+      reload();
+    } else {
+      toastError("Failed to add new stocks account.");
+    }
+  }, [reload]);
 
   return (
     <TableContainer>
@@ -90,15 +82,7 @@ const StocksWeightManagingTable = ({
         <TableHead>
           <TableRow>
             <TableHeaderCell sx={{ width: "2rem" }}>
-              <AddCircleOutline
-                onClick={
-                  isTemplateAdded ? undefined : addNewStocksAccountTemplate
-                }
-                color={useMemo(
-                  () => (isTemplateAdded ? "disabled" : "success"),
-                  [isTemplateAdded]
-                )}
-              />
+              <AddCircleOutline onClick={addStocksAccount} color={"success"} />
             </TableHeaderCell>
             <TableHeaderCell>계좌명</TableHeaderCell>
             <TableHeaderCell sx={{ width: "8rem" }}>현재 금액</TableHeaderCell>

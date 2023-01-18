@@ -1,5 +1,7 @@
+import { Lock } from "@mui/icons-material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import Popup from "reactjs-popup";
 import api from "../../../api";
 import { Canceler } from "../../../models/control";
 import {
@@ -8,7 +10,7 @@ import {
   StocksLiveInfo,
 } from "../../../models/stocks";
 import { setUnavailableBalance } from "../../../store/slices/balanceSlice";
-import CenteredCircularProgress from "../../CircularProgresses/CenteredCircularProgress";
+import PreservationsPopupContent from "./PreservationsPopupContent";
 import StocksWeightManagingTable from "./StocksWeightManagingTable";
 
 const Stocks = () => {
@@ -19,6 +21,8 @@ const Stocks = () => {
   const [stocksLiveInfosSet, setStocksLiveInfosSet] = useState<
     StocksLiveInfo[][]
   >([]);
+  const [isPreservationsPopupOpen, setIsPreservationsPopupOpen] =
+    useState(false);
 
   const stocksAccountsTotalValues = useMemo(
     () =>
@@ -46,6 +50,16 @@ const Stocks = () => {
     }
     setStocksAccounts(_stocksAccounts);
   }, []);
+
+  const openPreservationsPopup = useCallback(
+    () => setIsPreservationsPopupOpen(true),
+    []
+  );
+
+  const closePreservationsPopup = useCallback(
+    () => setIsPreservationsPopupOpen(false),
+    []
+  );
 
   useEffect(() => {
     const canceler = { cancel: false };
@@ -100,16 +114,24 @@ const Stocks = () => {
 
   return (
     <>
-      {stocksAccountsTotalValues.length > 0 ? (
-        <StocksWeightManagingTable
-          stocksAccounts={stocksAccounts}
-          setStocksAccounts={setStocksAccounts}
-          stocksAccountsTotalValues={stocksAccountsTotalValues}
-          reload={fetchStocksAccounts}
+      <Lock onClick={openPreservationsPopup} />
+      <Popup
+        open={isPreservationsPopupOpen}
+        modal
+        closeOnDocumentClick={false}
+        closeOnEscape={false}
+      >
+        <PreservationsPopupContent
+          preservations={preservations}
+          reload={fetchPreservations}
+          close={closePreservationsPopup}
         />
-      ) : (
-        <CenteredCircularProgress />
-      )}
+      </Popup>
+      <StocksWeightManagingTable
+        stocksAccounts={stocksAccounts}
+        stocksAccountsTotalValues={stocksAccountsTotalValues}
+        reload={fetchStocksAccounts}
+      />
     </>
   );
 };
