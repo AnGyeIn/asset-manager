@@ -13,7 +13,7 @@ const StocksWeightManagingSection = (props: StocksWeightManagingProps) => {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography>계좌 간 비중 관리</Typography>
+        <Typography>계좌별 비중 관리</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <StocksWeightManagingTable {...props} />
