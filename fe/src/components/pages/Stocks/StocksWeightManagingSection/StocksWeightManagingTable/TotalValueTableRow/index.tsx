@@ -1,7 +1,7 @@
 import { TableCell, TableRow } from "@mui/material";
 import { memo, useMemo } from "react";
-import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
-import { getCurrencyStringFrom } from "../../../../../utils/stringUtils";
+import { centeredBoxStyleHorizontal } from "../../../../../../styles/boxStyles";
+import { getCurrencyStringFrom } from "../../../../../../utils/stringUtils";
 
 type Props = {
   totalValue: number;

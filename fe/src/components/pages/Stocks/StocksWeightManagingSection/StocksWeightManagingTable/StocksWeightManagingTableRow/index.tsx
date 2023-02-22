@@ -9,22 +9,22 @@ import {
   useRef,
   useState,
 } from "react";
-import api from "../../../../../api";
+import api from "../../../../../../api";
 import {
   StocksAccount,
   StocksAccountUpdate,
-} from "../../../../../models/stocks";
-import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
+} from "../../../../../../models/stocks";
+import { centeredBoxStyleHorizontal } from "../../../../../../styles/boxStyles";
 import {
   getInputFieldSetter,
   isInputChanged,
-} from "../../../../../utils/inputUtils";
-import { getCurrencyStringFrom } from "../../../../../utils/stringUtils";
-import { getColoredNumberStyle } from "../../../../../utils/styleUtils";
-import { toastError, toastInfo } from "../../../../../utils/toastUtils";
-import CenteredCircularProgress from "../../../../CircularProgresses/CenteredCircularProgress";
-import InputTextField from "../../../../TextFields/InputTextField";
-import NumberTextFieldValidOnly from "../../../../TextFields/NumberTextFieldValidOnly";
+} from "../../../../../../utils/inputUtils";
+import { getCurrencyStringFrom } from "../../../../../../utils/stringUtils";
+import { getColoredNumberStyle } from "../../../../../../utils/styleUtils";
+import { toastError, toastInfo } from "../../../../../../utils/toastUtils";
+import CenteredCircularProgress from "../../../../../CircularProgresses/CenteredCircularProgress";
+import InputTextField from "../../../../../TextFields/InputTextField";
+import NumberTextFieldValidOnly from "../../../../../TextFields/NumberTextFieldValidOnly";
 
 type Props = {
   stocksAccount: StocksAccount;

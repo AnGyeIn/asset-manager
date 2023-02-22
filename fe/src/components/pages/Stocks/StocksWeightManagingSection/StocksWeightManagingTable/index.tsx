@@ -8,26 +8,21 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
-import api from "../../../../api";
-import { StocksAccount } from "../../../../models/stocks";
-import { RootState } from "../../../../models/store";
-import { toastError, toastInfo } from "../../../../utils/toastUtils";
-import { isValidNumber } from "../../../../utils/validationUtils";
-import TableHeaderCell from "../../../TableCells/TableHeaderCell";
+import api from "../../../../../api";
+import { RootState } from "../../../../../models/store";
+import { toastError, toastInfo } from "../../../../../utils/toastUtils";
+import { isValidNumber } from "../../../../../utils/validationUtils";
+import TableHeaderCell from "../../../../TableCells/TableHeaderCell";
+import { StocksWeightManagingProps } from "../types";
 import CashWeightManagingTableRow from "./CashWeightManagingTableRow";
 import StocksWeightManagingTableRow from "./StocksWeightManagingTableRow";
 import TotalValueTableRow from "./TotalValueTableRow";
 
-type Props = {
-  stocksAccounts: StocksAccount[];
-  stocksAccountsTotalValues: number[];
-  reload: () => void;
-};
 const StocksWeightManagingTable = ({
   stocksAccounts,
   stocksAccountsTotalValues,
   reload,
-}: Props) => {
+}: StocksWeightManagingProps) => {
   const { availableBalance } = useSelector(
     (_state: RootState) => _state.balance
   );

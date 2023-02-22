@@ -11,7 +11,7 @@ import {
 } from "../../../models/stocks";
 import { setUnavailableBalance } from "../../../store/slices/balanceSlice";
 import PreservationsPopupContent from "./PreservationsPopupContent";
-import StocksWeightManagingTable from "./StocksWeightManagingTable";
+import StocksWeightManagingSection from "./StocksWeightManagingSection";
 
 const Stocks = () => {
   const dispatch = useDispatch();
@@ -127,7 +127,7 @@ const Stocks = () => {
           close={closePreservationsPopup}
         />
       </Popup>
-      <StocksWeightManagingTable
+      <StocksWeightManagingSection
         stocksAccounts={stocksAccounts}
         stocksAccountsTotalValues={stocksAccountsTotalValues}
         reload={fetchStocksAccounts}

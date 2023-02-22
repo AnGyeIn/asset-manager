@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from "@mui/material";
 import { memo, useMemo } from "react";
-import { centeredBoxStyleHorizontal } from "../../../../../styles/boxStyles";
-import { getCurrencyStringFrom } from "../../../../../utils/stringUtils";
-import { getColoredNumberStyle } from "../../../../../utils/styleUtils";
+import { centeredBoxStyleHorizontal } from "../../../../../../styles/boxStyles";
+import { getCurrencyStringFrom } from "../../../../../../utils/stringUtils";
+import { getColoredNumberStyle } from "../../../../../../utils/styleUtils";
 
 type Props = {
   totalCash: number;
