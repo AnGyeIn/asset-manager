@@ -10,6 +10,7 @@ import {
   StocksLiveInfo,
 } from "../../../models/stocks";
 import { setUnavailableBalance } from "../../../store/slices/balanceSlice";
+import { zeroIfInvalidNumber } from "../../../utils/validationUtils";
 import PreservationsPopupContent from "./PreservationsPopupContent";
 import StocksWeightManagingSection from "./StocksWeightManagingSection";
 
@@ -27,10 +28,7 @@ const Stocks = () => {
   const stocksAccountsTotalValues = useMemo(
     () =>
       stocksLiveInfosSet.map((stocksLiveInfos) =>
-        stocksLiveInfos.reduce(
-          (sum, { floatingValue, value }) => sum + floatingValue + value,
-          0
-        )
+        stocksLiveInfos.reduce((sum, { value }) => sum + value, 0)
       ),
     [stocksLiveInfosSet]
   );
@@ -50,6 +48,45 @@ const Stocks = () => {
     }
     setStocksAccounts(_stocksAccounts);
   }, []);
+
+  const fetchStocksLiveInfosSet = useCallback(
+    async (canceler?: Canceler) => {
+      // TODO: live streaming
+      const _stocksLiveInfosSet = await Promise.all(
+        stocksAccounts.map(
+          async ({ stocksList }) =>
+            await Promise.all(
+              stocksList.map(
+                async ({
+                  code,
+                  stocksType,
+                  floatingStocksNum,
+                  stocksNum,
+                }): Promise<StocksLiveInfo> => {
+                  // TODO: crawling to get name and stocks with code and stocksType
+                  const name = "test";
+                  const price = 1000;
+
+                  return {
+                    name,
+                    price,
+                    value:
+                      price *
+                      (zeroIfInvalidNumber(floatingStocksNum) +
+                        zeroIfInvalidNumber(stocksNum)),
+                  };
+                }
+              )
+            )
+        )
+      );
+      if (canceler?.cancel) {
+        return;
+      }
+      setStocksLiveInfosSet(_stocksLiveInfosSet);
+    },
+    [stocksAccounts]
+  );
 
   const openPreservationsPopup = useCallback(
     () => setIsPreservationsPopupOpen(true),
@@ -83,30 +120,7 @@ const Stocks = () => {
 
   useEffect(() => {
     const canceler = { cancel: false };
-    (async () => {
-      const _stocksLiveInfosSet = await Promise.all(
-        stocksAccounts.map(
-          async ({ stocksList }) =>
-            await Promise.all(
-              stocksList.map(
-                async ({ code, stocksType, floatingStocksNum, stocksNum }) => {
-                  // TODO: crawling to get name and stocks with code and stocksType
-                  const name = "test";
-                  const price = 1000;
-
-                  return {
-                    name,
-                    price,
-                    floatingValue: price * Number(floatingStocksNum),
-                    value: price * Number(stocksNum),
-                  };
-                }
-              )
-            )
-        )
-      );
-      setStocksLiveInfosSet(_stocksLiveInfosSet);
-    })();
+    fetchStocksLiveInfosSet(canceler);
     return () => {
       canceler.cancel = true;
     };

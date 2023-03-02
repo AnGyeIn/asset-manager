@@ -46,6 +46,5 @@ export type StocksAccountUpdate = FieldRemoved<
 export type StocksLiveInfo = {
   name: string;
   price: number;
-  floatingValue: number;
   value: number;
 };
