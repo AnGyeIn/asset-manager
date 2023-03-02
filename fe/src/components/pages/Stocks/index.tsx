@@ -12,6 +12,7 @@ import {
 import { setUnavailableBalance } from "../../../store/slices/balanceSlice";
 import { zeroIfInvalidNumber } from "../../../utils/validationUtils";
 import PreservationsPopupContent from "./PreservationsPopupContent";
+import StocksAccountsSection from "./StocksAccountsSection";
 import StocksWeightManagingSection from "./StocksWeightManagingSection";
 
 const Stocks = () => {
@@ -143,6 +144,12 @@ const Stocks = () => {
       </Popup>
       <StocksWeightManagingSection
         stocksAccounts={stocksAccounts}
+        stocksAccountsTotalValues={stocksAccountsTotalValues}
+        reload={fetchStocksAccounts}
+      />
+      <StocksAccountsSection
+        stocksAccounts={stocksAccounts}
+        stocksLiveInfosSet={stocksLiveInfosSet}
         stocksAccountsTotalValues={stocksAccountsTotalValues}
         reload={fetchStocksAccounts}
       />

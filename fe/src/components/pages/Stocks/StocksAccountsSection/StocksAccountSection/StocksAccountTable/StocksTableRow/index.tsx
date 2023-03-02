@@ -1,24 +1,21 @@
 import { TableCell, TableRow } from "@mui/material";
 import { memo, useMemo } from "react";
-import { Stocks, StocksLiveInfo } from "../../../../../models/stocks";
-import { getCurrencyStringFrom } from "../../../../../utils/stringUtils";
-import {
-  getColoredBackgroundByNumberStyle,
-  getColoredNumberStyle,
-} from "../../../../../utils/styleUtils";
+import { Stocks, StocksLiveInfo } from "../../../../../../../models/stocks";
+import { getCurrencyStringFrom } from "../../../../../../../utils/stringUtils";
+import { getColoredBackgroundByNumberStyle, getColoredNumberStyle } from "../../../../../../../utils/styleUtils";
 import {
   safeDivision,
   zeroIfInvalidNumber,
-} from "../../../../../utils/validationUtils";
+} from "../../../../../../../utils/validationUtils";
 
 type Props = {
   stocks: Stocks;
   stocksLiveInfo: StocksLiveInfo;
-  stocksAccountTotalValueWithCash: number;
+  stocksAccountTotalValue: number;
   targetValue: number;
   reload: () => void;
 };
-const StocksRow = ({
+const StocksTableRow = ({
   stocks: {
     code,
     floatingStocksNum,
@@ -28,38 +25,33 @@ const StocksRow = ({
     isBeingManaged,
   },
   stocksLiveInfo: { name, value, price },
-  stocksAccountTotalValueWithCash,
+  stocksAccountTotalValue,
   targetValue,
   reload,
 }: Props) => {
-  const { benefit, benefitRate, totalCost, meanCost, weight, adjustment } =
-    useMemo(() => {
-      const _totalCost =
-        zeroIfInvalidNumber(floatingStocksNum) *
-          zeroIfInvalidNumber(floatingCostPerStocks) +
-        zeroIfInvalidNumber(cost);
-      const _benefit = value - _totalCost;
-      return {
-        benefit: _benefit,
-        benefitRate: (_benefit / _totalCost) * 100,
-        totalCost: _totalCost,
-        meanCost: safeDivision(
-          _totalCost,
-          zeroIfInvalidNumber(floatingStocksNum) +
-            zeroIfInvalidNumber(stocksNum)
-        ),
-        weight: safeDivision(value, stocksAccountTotalValueWithCash) * 100,
-        adjustment: targetValue - value,
-      };
-    }, [
-      floatingStocksNum,
-      floatingCostPerStocks,
-      cost,
-      value,
-      stocksNum,
-      stocksAccountTotalValueWithCash,
-      targetValue,
-    ]);
+  const { benefit, benefitRate, totalCost, meanCost } = useMemo(() => {
+    const _totalCost =
+      zeroIfInvalidNumber(floatingStocksNum) *
+        zeroIfInvalidNumber(floatingCostPerStocks) +
+      zeroIfInvalidNumber(cost);
+    const _benefit = value - _totalCost;
+    return {
+      benefit: _benefit,
+      benefitRate: safeDivision(_benefit, _totalCost) * 100,
+      totalCost: _totalCost,
+      meanCost: safeDivision(
+        _totalCost,
+        zeroIfInvalidNumber(floatingStocksNum) + zeroIfInvalidNumber(stocksNum)
+      ),
+    };
+  }, [floatingStocksNum, floatingCostPerStocks, cost, value, stocksNum]);
+
+  const weight = useMemo(
+    () => safeDivision(value, stocksAccountTotalValue),
+    [value, stocksAccountTotalValue]
+  );
+
+  const adjustment = useMemo(() => targetValue - value, [targetValue, value]);
 
   return (
     <TableRow
@@ -127,4 +119,4 @@ const StocksRow = ({
   );
 };
 
-export default memo(StocksRow);
+export default memo(StocksTableRow);

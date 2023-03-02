@@ -1,19 +1,22 @@
 import { ExpandMore } from "@mui/icons-material";
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
 import { memo } from "react";
-import { StocksAccount } from "../../../../../models/stocks";
+import StocksAccountTable from "./StocksAccountTable";
+import { StocksAccountProps } from "./types";
 
-type Props = {
-  stocksAccount: StocksAccount;
-};
-const StocksAccountSection = ({ stocksAccount: { name } }: Props) => {
+const StocksAccountSection = (props: StocksAccountProps) => {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography>{name}</Typography>
+        <Typography>{props.stocksAccount.name}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        {/* TODO */}
+        <StocksAccountTable {...props} />
       </AccordionDetails>
     </Accordion>
   );
