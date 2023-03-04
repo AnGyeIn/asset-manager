@@ -22,6 +22,7 @@ type Props<I> = {
   labelKey?: keyof I;
   sx?: SxProps;
   disabled?: boolean;
+  error?: boolean;
 };
 const InputTextField = <I extends Input>({
   input,
@@ -34,6 +35,7 @@ const InputTextField = <I extends Input>({
   labelKey: inLabelKey,
   sx,
   disabled = false,
+  error = false,
 }: Props<I>) => {
   const labelKey = useMemo(
     () =>
@@ -75,6 +77,7 @@ const InputTextField = <I extends Input>({
       onBlur={onCompleted}
       onKeyDown={onCompletedByEnterKeyDown}
       disabled={disabled}
+      error={error}
     />
   );
 };

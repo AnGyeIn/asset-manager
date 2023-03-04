@@ -196,7 +196,7 @@ const api = {
     },
     stocks: async (code: string, stocks: StocksUpdate) => {
       const path = `/stocks/${code}`;
-      const response = await checkResponse(POST, {
+      const response = await checkResponse(PATCH, {
         path,
         data: stocks,
       });

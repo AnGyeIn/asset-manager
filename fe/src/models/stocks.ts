@@ -20,10 +20,10 @@ export type StocksCreate = {
 };
 
 export type StocksUpdate = {
-  floatingStocksNum?: number;
-  floatingCostPerStocks?: number;
-  stocksNum?: number;
-  cost?: number;
+  floatingStocksNum: number;
+  floatingCostPerStocks: number;
+  stocksNum: number;
+  cost: number;
   isBeingManaged: boolean;
 };
 

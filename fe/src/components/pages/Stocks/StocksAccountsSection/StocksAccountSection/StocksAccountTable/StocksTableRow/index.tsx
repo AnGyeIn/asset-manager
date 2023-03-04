@@ -1,12 +1,27 @@
-import { TableCell, TableRow } from "@mui/material";
-import { memo, useMemo } from "react";
-import { Stocks, StocksLiveInfo } from "../../../../../../../models/stocks";
-import { getCurrencyStringFrom } from "../../../../../../../utils/stringUtils";
-import { getColoredBackgroundByNumberStyle, getColoredNumberStyle } from "../../../../../../../utils/styleUtils";
+import { RemoveCircleOutline } from "@mui/icons-material";
+import { Box, Checkbox, TableCell, TableRow } from "@mui/material";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import api from "../../../../../../../api";
 import {
-  safeDivision,
-  zeroIfInvalidNumber,
-} from "../../../../../../../utils/validationUtils";
+  Stocks,
+  StocksLiveInfo,
+  StocksUpdate,
+} from "../../../../../../../models/stocks";
+import { centeredBoxStyleHorizontal } from "../../../../../../../styles/boxStyles";
+import {
+  getInputFieldSetter,
+  getInputFieldSetterFromCheckedChangeEvent,
+  isInputChanged,
+} from "../../../../../../../utils/inputUtils";
+import { getCurrencyStringFrom } from "../../../../../../../utils/stringUtils";
+import {
+  getColoredBackgroundByNumberStyle,
+  getColoredNumberStyle,
+} from "../../../../../../../utils/styleUtils";
+import { toastError, toastInfo } from "../../../../../../../utils/toastUtils";
+import { safeDivision } from "../../../../../../../utils/validationUtils";
+import CenteredCircularProgress from "../../../../../../CircularProgresses/CenteredCircularProgress";
+import NumberTextFieldValidOnly from "../../../../../../TextFields/NumberTextFieldValidOnly";
 
 type Props = {
   stocks: Stocks;
@@ -29,34 +44,117 @@ const StocksTableRow = ({
   targetValue,
   reload,
 }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [input, setInput] = useState<StocksUpdate>({
+    floatingStocksNum,
+    floatingCostPerStocks,
+    stocksNum,
+    cost,
+    isBeingManaged,
+  });
+
+  const inputStore = useRef<StocksUpdate>({
+    floatingStocksNum,
+    floatingCostPerStocks,
+    stocksNum,
+    cost,
+    isBeingManaged,
+  });
+
   const { benefit, benefitRate, totalCost, meanCost } = useMemo(() => {
-    const _totalCost =
-      zeroIfInvalidNumber(floatingStocksNum) *
-        zeroIfInvalidNumber(floatingCostPerStocks) +
-      zeroIfInvalidNumber(cost);
+    const _totalCost = floatingStocksNum * floatingCostPerStocks + cost;
     const _benefit = value - _totalCost;
     return {
       benefit: _benefit,
       benefitRate: safeDivision(_benefit, _totalCost) * 100,
       totalCost: _totalCost,
-      meanCost: safeDivision(
-        _totalCost,
-        zeroIfInvalidNumber(floatingStocksNum) + zeroIfInvalidNumber(stocksNum)
-      ),
+      meanCost: safeDivision(_totalCost, floatingStocksNum + stocksNum),
     };
   }, [floatingStocksNum, floatingCostPerStocks, cost, value, stocksNum]);
 
   const weight = useMemo(
-    () => safeDivision(value, stocksAccountTotalValue),
+    () => safeDivision(value, stocksAccountTotalValue) * 100,
     [value, stocksAccountTotalValue]
   );
 
   const adjustment = useMemo(() => targetValue - value, [targetValue, value]);
 
+  const updateStocks = useCallback(async () => {
+    if (!isInputChanged(input, inputStore)) {
+      return;
+    }
+    setIsLoading(true);
+    inputStore.current = { ...input };
+    const succeeded = await api.patch.stocks(code, input);
+    setIsLoading(false);
+    if (succeeded) {
+      reload();
+    } else {
+      toastError(`Failed to update stocks ${name}.`);
+    }
+  }, [input, code, reload, name]);
+
+  const deleteStocks = useCallback(async () => {
+    setIsLoading(true);
+    const succeeded = await api.delete.stocks(code);
+    setIsLoading(false);
+    if (succeeded) {
+      toastInfo(`Succeeded to delete stocks ${name}.`);
+      reload();
+    } else {
+      toastError(`Failed to delete stocks ${name}.`);
+    }
+  }, [code, name, reload]);
+
+  const setFloatingStocksNum = useCallback(
+    getInputFieldSetter<StocksUpdate, number>(setInput, "floatingStocksNum"),
+    []
+  );
+
+  const setFloatingCostPerStocks = useCallback(
+    getInputFieldSetter<StocksUpdate, number>(
+      setInput,
+      "floatingCostPerStocks"
+    ),
+    []
+  );
+
+  const setStocksNum = useCallback(
+    getInputFieldSetter<StocksUpdate, number>(setInput, "stocksNum"),
+    []
+  );
+
+  const setCost = useCallback(
+    getInputFieldSetter<StocksUpdate, number>(setInput, "cost"),
+    []
+  );
+
+  const setIsBeingManaged = useCallback(
+    getInputFieldSetterFromCheckedChangeEvent<StocksUpdate>(
+      setInput,
+      "isBeingManaged"
+    ),
+    []
+  );
+
+  useEffect(() => {
+    updateStocks();
+  }, [input.isBeingManaged, updateStocks]);
+
   return (
     <TableRow
       sx={useMemo(() => getColoredBackgroundByNumberStyle(benefit), [benefit])}
     >
+      <TableCell>
+        {isLoading ? (
+          <CenteredCircularProgress sx={{ width: "2rem", height: "1rem" }} />
+        ) : (
+          <Box sx={centeredBoxStyleHorizontal}>
+            <RemoveCircleOutline color={"error"} onClick={deleteStocks} />
+          </Box>
+        )}
+      </TableCell>
       <TableCell sx={{ textAlign: "center" }}>{code}</TableCell>
       <TableCell>{name}</TableCell>
       <TableCell sx={{ textAlign: "right" }}>
@@ -66,33 +164,57 @@ const StocksTableRow = ({
         {useMemo(() => `${benefitRate.toFixed(2)}%`, [benefitRate])}
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
-        {/* TODO: TextField */}
-        {useMemo(
-          () => zeroIfInvalidNumber(floatingStocksNum),
-          [floatingStocksNum]
-        )}
+        <Box sx={centeredBoxStyleHorizontal}>
+          <NumberTextFieldValidOnly
+            value={input.floatingStocksNum}
+            setValue={setFloatingStocksNum}
+            min={0}
+            onCompleted={updateStocks}
+            sx={{ height: "1rem", textAlign: "right" }}
+            isInteger={false}
+          />
+        </Box>
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
-        {/* TODO: TextField */}
-        {useMemo(
-          () =>
-            getCurrencyStringFrom(zeroIfInvalidNumber(floatingCostPerStocks)),
-          [floatingCostPerStocks]
-        )}
+        <Box sx={centeredBoxStyleHorizontal}>
+          <NumberTextFieldValidOnly
+            value={input.floatingCostPerStocks}
+            setValue={setFloatingCostPerStocks}
+            min={0}
+            formatter={getCurrencyStringFrom}
+            onCompleted={updateStocks}
+            sx={{ height: "1rem", textAlign: "right" }}
+          />
+        </Box>
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
-        {/* TODO: TextField */}
-        {useMemo(() => zeroIfInvalidNumber(stocksNum), [stocksNum])}
+        <Box sx={centeredBoxStyleHorizontal}>
+          <NumberTextFieldValidOnly
+            value={input.stocksNum}
+            setValue={setStocksNum}
+            min={0}
+            onCompleted={updateStocks}
+            sx={{ height: "1rem", textAlign: "right" }}
+          />
+        </Box>
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
-        {/* TODO: TextField */}
-        {useMemo(
-          () => getCurrencyStringFrom(zeroIfInvalidNumber(cost)),
-          [cost]
-        )}
+        <Box sx={centeredBoxStyleHorizontal}>
+          <NumberTextFieldValidOnly
+            value={input.cost}
+            setValue={setCost}
+            min={0}
+            formatter={getCurrencyStringFrom}
+            onCompleted={updateStocks}
+            sx={{ height: "1rem", textAlign: "right" }}
+          />
+        </Box>
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
         {useMemo(() => getCurrencyStringFrom(totalCost), [totalCost])}
+      </TableCell>
+      <TableCell sx={{ textAlign: "right" }}>
+        {useMemo(() => getCurrencyStringFrom(value), [value])}
       </TableCell>
       <TableCell sx={{ textAlign: "right" }}>
         {useMemo(() => getCurrencyStringFrom(meanCost), [meanCost])}
@@ -104,8 +226,11 @@ const StocksTableRow = ({
         {useMemo(() => `${weight.toFixed(2)}%`, [weight])}
       </TableCell>
       <TableCell>
-        {/* TODO: Checkbox */}
-        {isBeingManaged}
+        <Checkbox
+          color={"default"}
+          checked={input.isBeingManaged}
+          onChange={setIsBeingManaged}
+        />
       </TableCell>
       <TableCell
         sx={useMemo(

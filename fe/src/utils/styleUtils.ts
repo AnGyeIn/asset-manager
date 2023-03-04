@@ -7,7 +7,7 @@ export const getColoredNumberStyle = (
 export const getColoredBackgroundByNumberStyle = (
   value: number
 ): {
-  backgroundColor: "lightred" | "lightblue" | "white";
+  backgroundColor: "pink" | "lightblue" | "white";
 } => ({
-  backgroundColor: value > 0 ? "lightred" : value < 0 ? "lightblue" : "white",
+  backgroundColor: value > 0 ? "pink" : value < 0 ? "lightblue" : "white",
 });

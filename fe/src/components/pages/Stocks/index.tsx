@@ -147,12 +147,15 @@ const Stocks = () => {
         stocksAccountsTotalValues={stocksAccountsTotalValues}
         reload={fetchStocksAccounts}
       />
-      <StocksAccountsSection
-        stocksAccounts={stocksAccounts}
-        stocksLiveInfosSet={stocksLiveInfosSet}
-        stocksAccountsTotalValues={stocksAccountsTotalValues}
-        reload={fetchStocksAccounts}
-      />
+      {stocksAccounts.length > 0 &&
+        stocksLiveInfosSet.length === stocksAccounts.length && (
+          <StocksAccountsSection
+            stocksAccounts={stocksAccounts}
+            stocksLiveInfosSet={stocksLiveInfosSet}
+            stocksAccountsTotalValues={stocksAccountsTotalValues}
+            reload={fetchStocksAccounts}
+          />
+        )}
     </>
   );
 };
